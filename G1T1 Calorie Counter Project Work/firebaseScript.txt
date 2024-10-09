@@ -1,0 +1,24 @@
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyBAhYdiPIDo0OtV-RoIiRVQCxvgofMb0js",
+    authDomain: "snack-quest.firebaseapp.com",
+    databaseURL: "https://snack-quest-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "snack-quest",
+    storageBucket: "snack-quest.appspot.com",
+    messagingSenderId: "974726219698",
+    appId: "1:974726219698:web:361c5bf4bf98a8798c86ab",
+    measurementId: "G-YXRNC4ZPTZ"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
