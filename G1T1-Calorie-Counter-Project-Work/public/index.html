@@ -23,9 +23,6 @@
         .dog-image {
             padding: 20px;
         }
-        #login-container, #register-container, #app-container {
-            /* display: none; */
-        }
     </style>
 </head>
 <body>
@@ -40,7 +37,6 @@
             <p>Don't have an account? <a href="#" id="show-register">Register here</a></p>
         </form>
     </div>
-
     <!-- Register Form -->
     <div id="register-container">
         <h2>Register</h2>
@@ -143,9 +139,7 @@
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            loginContainer.style.display = 'none';
-            registerContainer.style.display = 'none';
-            appContainer.style.display = 'block';
+            window.location.href = "3DVersion.html"; 
         } else {
             loginContainer.style.display = 'block';
             registerContainer.style.display = 'none';
