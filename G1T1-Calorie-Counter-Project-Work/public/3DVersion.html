@@ -442,6 +442,25 @@
         }
     }
   </style>
+  <script>
+    // DO NOT MODIFY THIS ARRAY
+    var stations = ["woodlands", "yishun", "bishan", "ang mo kio", "toa payoh", "novena", "orchard", "somerset", 
+            "dhoby ghaut", "city hall", "raffles place", "tanjong pagar", "outram park", "buona vista", 
+            "clementi", "jurong east", "chinese garden", "lakeside", "boon lay", "pioneer", "joo koon", 
+            "gul circle", "tuas crescent", "tuas west road", "tuas link", "choa chu kang", "bukit panjang", 
+            "bukit batok", "queenstown", "redhill", "tiong bahru", "harbourfront", "serangoon", "punggol", 
+            "sengkang", "hougang", "khatib", "yio chu kang", "marsiling", "admiralty", "canberra", 
+            "bukit gombak", "bukit merah", "tampines", "pasir ris", "bedok", "simei", "eunos", "kallang", 
+            "paya lebar", "changi", "expo", "downtown east", "joo chiat", "kembangan", "tanah merah", 
+            "aljunied", "lavender", "bugis", "nicoll highway", "promenade", "bayfront", "esplanade", 
+            "marina bay", "telok ayer", "mountbatten", "stadium", "dakota", "bartley", "lorong chuan", 
+            "braddell", "potong pasir", "boon keng", "farrer park", "little india", "rochor", "bugis", 
+            "bukit timah", "caldecott", "upper thomson", "bright hill", "sin ming", "springleaf", "lentor", 
+            "mayflower", "khatib", "woodlands north", "woodlands south", "maxwell", "shenton way", 
+            "gardens by the bay", "marine parade", "marine terrace", "siglap", "suntec", "downtown", 
+            "chinatown", "telok blangah", "marymount", "one north", "haw par villa", "kent ridge", 
+            "commonwealth", "king albert park", "sixth avenue"];
+  </script>
 </head>
 <body>
 
@@ -603,7 +622,8 @@
     <!-- Food Nearby Page -->
     <div class="page" id="page2" style="left: 200%;">
       <div class="food-nearby-page">
-        <h2>Food Nearby</h2>
+        <h2>Food Nearby Recommendations</h2>
+        <h3>Please enter the name of the nearest MRT Station</h3>
         <!-- Content for the food nearby page -->
         <!-- Chat List / Container -->
         <div class="chat-list"></div>
@@ -612,7 +632,10 @@
         <div class="typing-area">
           <form action="#" class="typing-form">
               <div class="input-wrapper">
-                  <input type="text" placeholder="Enter a prompt here" class="typing-input" required>
+                  <input type="text" placeholder="Enter a prompt here" class="typing-input" id="typing-input" onkeyup="showHint(this.value)" required><br>
+                  <select id="hint" onchange="changeStation()" size="10">
+                    <option value="none">no suggestion</option>
+                  </select>
                   <button class="icon material-symbols-rounded">send</button>
               </div>
               <div class="action-buttons">
@@ -875,6 +898,9 @@
     const chatList = document.querySelector(".chat-list");
 
     let userMessage = null;
+    let wrapperText = null;
+    let fullMessage = null;
+    
 
     // API configuration
     const API_KEY = "AIzaSyDq4SCyitS7UFjOYd_4KcPMpYBW4gdgBFU";
@@ -935,7 +961,7 @@
                 body: JSON.stringify({
                     contents: [{
                         role: "user",
-                        parts: [{ text: userMessage }]
+                        parts: [{ text: fullMessage }]
                     }]
                 })
             });
@@ -983,8 +1009,11 @@
 
     // Handle sending outgoing chat messages
     const handleOutgoingChat = () => {
+        wrapperText = "Please provide only the exact address of the 7 Eleven outlet nearest to this MRT Station: ";
         userMessage = typingForm.querySelector(".typing-input").value.trim();
         if(!userMessage) return; //Exit if there is no message
+
+        fullMessage = wrapperText + userMessage;
 
         const html = `<div class="message-content">
                     <img src="images/user.jpg" alt="User Image" class="avatar">
@@ -1006,6 +1035,63 @@
 
         handleOutgoingChat();
     });
+
+    // Dropdown hint for Food Nearby text-input auto-fill
+    var hint = document.getElementById("hint");
+    var typingInput = document.getElementById("typing-input");
+
+    function changeStation() {
+        var newStation = hint.value;
+        // console.log(color);
+        // document.body.style.backgroundColor = newStation;
+        typingInput.value = newStation;
+    }
+
+    function showHint(q) {
+        clearOptions();
+    //Q.   what is clearOptions() for?
+        var found = false;
+        // lookup all hints from array if q is not "" 
+        if (q.length != 0 && q.trim() != "") {     
+            console.log(q);
+          
+            q = q.toLowerCase();  
+            var len = q.length;  
+            for (var station of stations) {  
+                // console.log(color);
+                if(station.toLowerCase().startsWith(q)) {  
+                    found = true;          
+                    addOption(station);               
+                }  
+            }  
+        }
+        if (!found)
+            addOption("no suggestion");
+    }
+
+    function addOption(station) {
+        var newOption = document.createElement("option");
+        var textNode = document.createTextNode(station);
+        newOption.appendChild(textNode);
+        newOption.value = station;
+        hint.appendChild(newOption);
+    }
+
+    function clearOptions() {
+        var len = hint.children.length;
+        for (let i=0;i<len;i++) {
+            hint.children[0].remove();
+    // Q.   //Q.    but after removing index zero, 
+    //won't the elements in the array move 1 index down and repopulate index zero?
+    //A.    Because the code always removes from index 0, 
+    //the increment of i does not cause any skipping.
+    //I misinterpreted as removing[i] instead of removing[0]
+        }
+        //while-loop is more intuitive:
+        //function clearOptions() {
+            // while (hint.children.length > 0) {
+            //     hint.children[0].remove();
+    }
   </script>
 
 </body>
