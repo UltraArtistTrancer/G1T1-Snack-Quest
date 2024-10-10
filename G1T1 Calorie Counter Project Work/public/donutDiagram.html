@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nutrient Consumption Tracker</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      text-align: center;
+    }
+    .navbar {
+      display: none;
+      justify-content: center;
+      background-color: #333;
+      margin-bottom: 20px;
+    }
+    .navbar a {
+      color: white;
+      padding: 14px 20px;
+      text-decoration: none;
+      text-align: center;
+    }
+    .navbar a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+    .chart-container {
+      width: 100%;
+      margin: 0 auto;
+      max-width: 300px;
+    }
+    @media (max-width: 992px) {
+      .navbar {
+        display: flex;
+      }
+      .chart-row {
+        display: none;
+      }
+    }
+    @media (min-width: 992px) {
+      .chart-row {
+        display: flex;
+        justify-content: space-around;
+      }
+      .navbar {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar for smaller screens -->
+  <div class="navbar" id="navbar">
+    <a href="#" onclick="showChart('protein')">Protein</a>
+    <a href="#" onclick="showChart('carbs')">Carbohydrates</a>
+    <a href="#" onclick="showChart('calories')">Calories</a>
+    <a href="#" onclick="showChart('fats')">Fats</a>
+  </div>
+
+  <h2 id="chart-title">Nutrient Consumption Tracker</h2>
+
+  <!-- Donut Chart Containers (4 diagrams) -->
+  <div class="row chart-row">
+    <div class="col-lg-3 col-md-6 chart-container">
+      <canvas id="proteinChart"></canvas>
+    </div>
+    <div class="col-lg-3 col-md-6 chart-container">
+      <canvas id="carbsChart"></canvas>
+    </div>
+    <div class="col-lg-3 col-md-6 chart-container">
+      <canvas id="caloriesChart"></canvas>
+    </div>
+    <div class="col-lg-3 col-md-6 chart-container">
+      <canvas id="fatsChart"></canvas>
+    </div>
+  </div>
+
+  <!-- One chart displayed at a time for smaller screens -->
+  <div class="chart-container" id="single-chart" style="display: none;">
+    <canvas id="singleNutrientChart"></canvas>
+  </div>
+
+  <script>
+    let chartData = {
+      protein: { consumed: 35, goal: 50, color: '#4CAF50' },
+      carbs: { consumed: 125, goal: 300, color: '#FFA500' },
+      calories: { consumed: 1800, goal: 2500, color: '#FF6347' },
+      fats: { consumed: 55, goal: 70, color: '#4682B4' }
+    };
+
+    let currentNutrient = 'protein';
+
+    // Function to display a single chart when screen is small
+    function showChart(nutrient) {
+      currentNutrient = nutrient;
+      document.getElementById('chart-title').innerText = `${nutrient.charAt(0).toUpperCase() + nutrient.slice(1)} Consumption Tracker`;
+      updateSingleChart();
+    }
+
+    function updateSingleChart() {
+      let nutrientData = chartData[currentNutrient];
+      singleNutrientChart.data.datasets[0].data = [nutrientData.consumed, nutrientData.goal - nutrientData.consumed];
+      singleNutrientChart.data.datasets[0].backgroundColor = [nutrientData.color, '#E0E0E0'];
+      singleNutrientChart.update();
+    }
+
+    // Create the donut charts for each nutrient
+    function createChart(chartId, nutrient) {
+      let ctx = document.getElementById(chartId).getContext('2d');
+      let nutrientData = chartData[nutrient];
+      return new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Consumed', 'Remaining'],
+          datasets: [{
+            data: [nutrientData.consumed, nutrientData.goal - nutrientData.consumed],
+            backgroundColor: [nutrientData.color, '#E0E0E0'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '80%',
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function(tooltipItem) {
+                  return tooltipItem.label + ': ' + tooltipItem.raw + ' grams';
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Initialize Charts
+    let proteinChart = createChart('proteinChart', 'protein');
+    let carbsChart = createChart('carbsChart', 'carbs');
+    let caloriesChart = createChart('caloriesChart', 'calories');
+    let fatsChart = createChart('fatsChart', 'fats');
+
+    // Create single chart for smaller screens
+    let ctxSingle = document.getElementById('singleNutrientChart').getContext('2d');
+    let singleNutrientChart = new Chart(ctxSingle, {
+      type: 'doughnut',
+      data: {
+        labels: ['Consumed', 'Remaining'],
+        datasets: [{
+          data: [chartData[currentNutrient].consumed, chartData[currentNutrient].goal - chartData[currentNutrient].consumed],
+          backgroundColor: [chartData[currentNutrient].color, '#E0E0E0'],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '80%',
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function(tooltipItem) {
+                return tooltipItem.label + ': ' + tooltipItem.raw + ' grams';
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Adjust layout based on screen size
+    function handleResize() {
+      if (window.innerWidth < 992) {
+        document.getElementById('navbar').style.display = 'flex';
+        document.querySelector('.chart-row').style.display = 'none';
+        document.getElementById('single-chart').style.display = 'block';
+        showChart(currentNutrient);
+      } else {
+        document.getElementById('navbar').style.display = 'none';
+        document.querySelector('.chart-row').style.display = 'flex';
+        document.getElementById('single-chart').style.display = 'none';
+      }
+    }
+
+    // Call handleResize on load and resize
+    window.onload = handleResize;
+    window.onresize = handleResize;
+  </script>
+
+</body>
+</html>
