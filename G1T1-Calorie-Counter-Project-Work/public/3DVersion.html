@@ -14,6 +14,43 @@
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0">
   <!-- Custom CSS -->
+
+
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+    import { getFirestore,collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+    
+    // Fill in with your own web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBAhYdiPIDo0OtV-RoIiRVQCxvgofMb0js",
+        authDomain: "snack-quest.firebaseapp.com",
+        databaseURL: "https://snack-quest-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "snack-quest",
+        storageBucket: "snack-quest.appspot.com",
+        messagingSenderId: "974726219698",
+        appId: "1:974726219698:web:361c5bf4bf98a8798c86ab",
+        measurementId: "G-YXRNC4ZPTZ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const logoutButton = document.getElementById('logout-button');
+
+    logoutButton.addEventListener('click', async () => {
+        await signOut(auth);
+    });
+
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+            window.location.href = "index.html"
+        }
+    });
+  </script>
+  <script type="module" src="./Leaderboard.js"></script>
   
   <style>
     /* General Styles */
@@ -464,37 +501,7 @@
 </head>
 <body>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
-    // Fill in with your own web app's Firebase configuration
-    const firebaseConfig = {
-        apiKey: "AIzaSyBAhYdiPIDo0OtV-RoIiRVQCxvgofMb0js",
-        authDomain: "snack-quest.firebaseapp.com",
-        databaseURL: "https://snack-quest-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "snack-quest",
-        storageBucket: "snack-quest.appspot.com",
-        messagingSenderId: "974726219698",
-        appId: "1:974726219698:web:361c5bf4bf98a8798c86ab",
-        measurementId: "G-YXRNC4ZPTZ"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    const logoutButton = document.getElementById('logout-button');
-
-    logoutButton.addEventListener('click', async () => {
-        await signOut(auth);
-    });
-
-    onAuthStateChanged(auth, (user) => {
-        if (!user) {
-            window.location.href = "index.html"
-        }
-    });
-  </script>
     <div><button id="logout-button" class="btn btn-danger px-5" href>Logout</button></div>
 
   <!-- Portal Animation Container -->
@@ -622,6 +629,7 @@
       <div class="leaderboard-page">
         <h2>Leaderboard</h2>
         <!-- Content for the leaderboard page -->
+        <div id="leaderboard-container"></div>
       </div>
     </div>
 
