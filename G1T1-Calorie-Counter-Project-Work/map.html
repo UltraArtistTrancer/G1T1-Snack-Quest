@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaflet Map with Search and Routing</title>
+    <title>Your nearest food</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
     <style>
@@ -18,95 +18,118 @@
 </head>
 <body>
 
-    <h1>Leaflet Map with Search and Routing</h1>
+    <div id="app">
+        <h1>Leaflet Map with Walking Routes Only</h1>
 
-    <!-- Search input -->
-    <input type="text" id="search-box" placeholder="Search for a location">
-    <button onclick="searchLocation()">Search</button>
-    
-    <div id="map"></div>
+        <!-- Search input controlled by Vue -->
+        <input type="text" v-model="searchQuery" placeholder="Search for a location">
+        <button @click="searchLocation">Search</button>
+        
+        <div id="map"></div>
+    </div>
 
+    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
     
+    <!-- Vue JS -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    
     <script>
-        // Initialize the map
-        const map = L.map('map').setView([1.2921, 103.8519], 14); // Example coordinates: Singapore
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    map: null,
+                    searchQuery: '',
+                    userLocation: null,
+                };
+            },
+            mounted() {
+                // Initialize the map when the component is mounted
+                this.initializeMap();
+            },
+            methods: {
+                initializeMap() {
+                    this.map = L.map('map').setView([1.2921, 103.8519], 14); // Singapore coordinates
 
-        // Add OpenStreetMap tiles
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 23,
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
+                    // Add OpenStreetMap tiles
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 23,
+                        attribution: '© OpenStreetMap contributors'
+                    }).addTo(this.map);
 
-        // Geolocation functionality
-        map.locate({ setView: true, maxZoom: 18 });
+                    // Geolocation
+                    this.map.locate({ setView: true, maxZoom: 18 });
 
-        map.on('locationfound', function (e) {
-            const radius = e.accuracy / 2;
-
-            // Marker at the user's location
-            L.marker(e.latlng).addTo(map)
-                .bindPopup(`You are within ${radius.toFixed(2)} meters from this point.`).openPopup();
-
-            // Circle indicating location accuracy
-            L.circle(e.latlng, radius).addTo(map);
-
-            // Store user's location
-            window.userLocation = e.latlng;
-        });
-
-        map.on('locationerror', function () {
-            alert("Unable to retrieve your location. Please allow location access.");
-        });
-
-        // Search function to locate a place using OpenStreetMap's Nominatim API
-        function searchLocation() {
-            const searchQuery = document.getElementById('search-box').value;
-            if (searchQuery) {
-                fetch(`https://nominatim.openstreetmap.org/search?q=${searchQuery}&format=json&limit=1`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.length > 0) {
-                            const lat = data[0].lat;
-                            const lon = data[0].lon;
-
-                            // Update the map to the searched location
-                            map.setView([lat, lon], 14);
-                            
-                            // Add a marker for the searched location
-                            const destination = L.marker([lat, lon]).addTo(map)
-                                .bindPopup(data[0].display_name).openPopup();
-
-                            // Check if user's location is available for routing
-                            if (window.userLocation) {
-                                createRoute(window.userLocation, destination.getLatLng());
-                            } else {
-                                alert("User location not found. Routing may not work.");
-                            }
-                        } else {
-                            alert("Location not found. Please try another search term.");
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error with search:", error);
-                        alert("Error with search. Please try again.");
+                    // Store user location when found
+                    this.map.on('locationfound', (e) => {
+                        const radius = e.accuracy / 2;
+                        L.marker(e.latlng).addTo(this.map)
+                            .bindPopup(`You are within ${radius.toFixed(2)} meters from this point.`).openPopup();
+                        L.circle(e.latlng, radius).addTo(this.map);
+                        this.userLocation = e.latlng;  // Store user location
                     });
-            } else {
-                alert("Please enter a search term.");
-            }
-        }
 
-        // Function to create a route using Leaflet Routing Machine
-        function createRoute(start, end) {
-            L.Routing.control({
-                waypoints: [
-                    L.latLng(start.lat, start.lng),
-                    L.latLng(end.lat, end.lng)
-                ],
-                routeWhileDragging: true
-            }).addTo(map);
-        }
+                    this.map.on('locationerror', () => {
+                        alert("Harvard was unable to retrieve your location. Please allow location access.");
+                    });
+                },
+                searchLocation() {
+                    if (this.searchQuery) {
+                        fetch(`https://nominatim.openstreetmap.org/search?q=${this.searchQuery}&format=json&limit=1`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.length > 0) {
+                                    const lat = data[0].lat;
+                                    const lon = data[0].lon;
+
+                                    // Update the map to the searched location
+                                    const destination = L.marker([lat, lon]).addTo(this.map)
+                                        .bindPopup(data[0].display_name).openPopup();
+                                    
+                                    this.map.setView([lat, lon], 14);
+
+                                    // Create route if user location is available
+                                    if (this.userLocation) {
+                                        this.createRoute(this.userLocation, destination.getLatLng());
+                                    } else {
+                                        alert("User location not found. Routing may not work.");
+                                    }
+                                } else {
+                                    alert("Location not found. Please try another search term.");
+                                }
+                            })
+                            .catch(error => {
+                                console.error("Error with search:", error);
+                                alert("Error with search. Please try again.");
+                            });
+                    } else {
+                        alert("Please enter a search term.");
+                    }
+                },
+                createRoute(start, end) {
+                    // Remove any existing routing layers
+                    if (this.routeControl) {
+                        this.map.removeControl(this.routeControl);
+                    }
+
+                    // Always use the "foot" profile for walking
+                    this.routeControl = L.Routing.control({
+                        waypoints: [
+                            L.latLng(start.lat, start.lng),
+                            L.latLng(end.lat, end.lng)
+                        ],
+                        routeWhileDragging: true,
+                        // Specify walking mode
+                        router: L.Routing.osrmv1({
+                            serviceUrl: 'https://router.project-osrm.org/route/v1',
+                            profile: 'foot' // Use "foot" for walking routes
+                        })
+                    }).addTo(this.map);
+                }
+            }
+        });
     </script>
 
 </body>
