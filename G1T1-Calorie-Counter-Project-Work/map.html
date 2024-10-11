@@ -75,7 +75,10 @@
                 <input type="text" id="location-name" class="form-control mt-2" placeholder="Enter location name" aria-label="Enter location name" />
                 <button id="add-pin-button" class="btn btn-primary mt-2">Add Pin</button>
                 <button id="clear-pins-button" class="btn btn-danger mt-2">Clear All Pins</button>
+                <button id="undo-remove-button" class="btn btn-secondary mt-2">Undo Remove</button>
+                <button id="center-map-button" class="btn btn-info mt-2">Center Map</button>
             </div>
+            <div id="error-container" class="alert alert-danger mt-2" style="display: none;"></div>
         </div>
     </div>
 </div>
@@ -110,8 +113,14 @@
         const entryExists = isSearched ? searchedEntries.has(name) : pinnedEntries.has(name);
         
         if (!markers[name] || entryExists) {
-            const icon = isSearched ? '🔍' : '📍'; // Different icons for searched and pinned
-            const marker = L.marker(latlng, { icon: L.divIcon({ className: 'marker-icon', html: `<span>${icon}</span>` }) }).addTo(map);
+            const icon = L.icon({
+                iconUrl: isSearched ? 'path/to/search-icon.png' : 'path/to/pin-icon.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                tooltipAnchor: [16, -28]
+            });
+            const marker = L.marker(latlng, { icon: icon }).addTo(map);
             marker.bindPopup(name).openPopup();
             marker.bindTooltip(name, { permanent: false, direction: 'top' }).openTooltip();
             markers[name] = marker;
@@ -129,10 +138,9 @@
                 }
             }
 
-            // Save marker to local storage
             saveMarkers();
         } else {
-            document.getElementById('error-message').textContent = 'A marker with this name already exists but was added anyway.';
+            showError('A marker with this name already exists but was added anyway.');
         }
     }
 
@@ -312,6 +320,21 @@
             timeout = setTimeout(() => func.apply(context, args), wait);
         };
     }
+
+    function showError(message) {
+        const errorContainer = document.getElementById('error-container');
+        errorContainer.textContent = message;
+        errorContainer.style.display = 'block';
+        setTimeout(() => {
+            errorContainer.style.display = 'none';
+        }, 5000);
+    }
+
+    document.getElementById('undo-remove-button').onclick = undoRemoveMarker;
+
+    document.getElementById('center-map-button').onclick = function() {
+        map.setView([1.2921, 103.8519], 14);
+    };
 
 </script>
 
