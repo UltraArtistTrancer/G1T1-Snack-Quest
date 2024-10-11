@@ -3,340 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Leaflet Map with Share</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Leaflet Map with Search and Routing</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
     <style>
-        body {
-            padding-top: 20px;
-        }
         #map {
-            height: 900px;
+            height: 600px;
             width: 100%;
         }
-        #controls {
-            margin-top: 10px;
-            width: 100%;
-        }
-        #legend {
-            max-height: 800px;
-            overflow-y: auto;
-            margin-left: 20px;
-        }
-        .btn-icon {
-            padding: 0.3rem;
-        }
-        .loading {
-            display: none;
-        }
-        .error {
-            color: red;
-        }
-        #instructions {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
+        #search-box {
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="instructions">
-        <strong>Instructions:</strong> Use the search bar to find a location or click on the map to add a pin. 
-        You can also remove pins from the legend and clear all pins.
-    </div>
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div id="map"></div>
-        </div>
-        <div class="col-md-4">
-            <div id="legend" class="border p-3">
-                <h5>Legend</h5>
-                <div id="pinned-content">
-                    <h6>Pinned Items</h6>
-                    <div id="pinned-legend-content"></div>
-                </div>
-                <div id="searched-content" class="mt-3">
-                    <h6>Searched Items</h6>
-                    <div id="searched-legend-content"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div id="controls" class="mt-3">
-                <input type="text" id="search-input" class="form-control" placeholder="Search for a place" aria-label="Search for a place" />
-                <button id="search-button" class="btn btn-secondary mt-2">Search</button>
-                <span id="loading" class="loading">Loading...</span>
-                <span id="error-message" class="error"></span>
-                <input type="text" id="location-name" class="form-control mt-2" placeholder="Enter location name" aria-label="Enter location name" />
-                <button id="add-pin-button" class="btn btn-primary mt-2">Add Pin</button>
-                <button id="clear-pins-button" class="btn btn-danger mt-2">Clear All Pins</button>
-                <button id="undo-remove-button" class="btn btn-secondary mt-2">Undo Remove</button>
-                <button id="center-map-button" class="btn btn-info mt-2">Center Map</button>
-            </div>
-            <div id="error-container" class="alert alert-danger mt-2" style="display: none;"></div>
-        </div>
-    </div>
-</div>
+    <h1>Leaflet Map with Search and Routing</h1>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Search input -->
+    <input type="text" id="search-box" placeholder="Search for a location">
+    <button onclick="searchLocation()">Search</button>
+    
+    <div id="map"></div>
 
-<script>
-    const { createApp } = Vue;
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    
+    <script>
+        // Initialize the map
+        const map = L.map('map').setView([1.2921, 103.8519], 14); // Example coordinates: Singapore
 
-    const map = L.map('map').setView([1.2921, 103.8519], 14);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 25,
-        attribution: '© OpenStreetMap'
-    }).addTo(map);
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 23,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
 
-    const markers = {};
-    const pinnedEntries = new Set();
-    const searchedEntries = new Set();
-    let removedMarkers = [];
+        // Geolocation functionality
+        map.locate({ setView: true, maxZoom: 18 });
 
-    // Load pinned markers from local storage
-    function loadMarkers() {
-        const savedMarkers = JSON.parse(localStorage.getItem('markers')) || [];
-        savedMarkers.forEach(marker => {
-            const latlng = L.latLng(marker.lat, marker.lng);
-            addMarker(latlng, marker.name, false);
+        map.on('locationfound', function (e) {
+            const radius = e.accuracy / 2;
+
+            // Marker at the user's location
+            L.marker(e.latlng).addTo(map)
+                .bindPopup(`You are within ${radius.toFixed(2)} meters from this point.`).openPopup();
+
+            // Circle indicating location accuracy
+            L.circle(e.latlng, radius).addTo(map);
+
+            // Store user's location
+            window.userLocation = e.latlng;
         });
-    }
 
-    function addMarker(latlng, name, isSearched = false) {
-        const entryExists = isSearched ? searchedEntries.has(name) : pinnedEntries.has(name);
-        
-        if (!markers[name] || entryExists) {
-            const icon = L.icon({
-                iconUrl: isSearched ? 'path/to/search-icon.png' : 'path/to/pin-icon.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                tooltipAnchor: [16, -28]
-            });
-            const marker = L.marker(latlng, { icon: icon }).addTo(map);
-            marker.bindPopup(name).openPopup();
-            marker.bindTooltip(name, { permanent: false, direction: 'top' }).openTooltip();
-            markers[name] = marker;
+        map.on('locationerror', function () {
+            alert("Unable to retrieve your location. Please allow location access.");
+        });
 
-            const shareableLink = `${window.location.href.split('?')[0]}?lat=${latlng.lat}&lng=${latlng.lng}&name=${encodeURIComponent(name)}`;
-            if (isSearched) {
-                if (!searchedEntries.has(name)) {
-                    searchedEntries.add(name);
-                    addToLegend(name, shareableLink, true);
-                }
+        // Search function to locate a place using OpenStreetMap's Nominatim API
+        function searchLocation() {
+            const searchQuery = document.getElementById('search-box').value;
+            if (searchQuery) {
+                fetch(`https://nominatim.openstreetmap.org/search?q=${searchQuery}&format=json&limit=1`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            const lat = data[0].lat;
+                            const lon = data[0].lon;
+
+                            // Update the map to the searched location
+                            map.setView([lat, lon], 14);
+                            
+                            // Add a marker for the searched location
+                            const destination = L.marker([lat, lon]).addTo(map)
+                                .bindPopup(data[0].display_name).openPopup();
+
+                            // Check if user's location is available for routing
+                            if (window.userLocation) {
+                                createRoute(window.userLocation, destination.getLatLng());
+                            } else {
+                                alert("User location not found. Routing may not work.");
+                            }
+                        } else {
+                            alert("Location not found. Please try another search term.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error with search:", error);
+                        alert("Error with search. Please try again.");
+                    });
             } else {
-                if (!pinnedEntries.has(name)) {
-                    pinnedEntries.add(name);
-                    addToLegend(name, shareableLink, false);
-                }
-            }
-
-            saveMarkers();
-        } else {
-            showError('A marker with this name already exists but was added anyway.');
-        }
-    }
-
-    function addToLegend(name, shareableLink, isSearched) {
-        const legendContent = isSearched ? document.getElementById('searched-legend-content') : document.getElementById('pinned-legend-content');
-        const colorClass = isSearched ? 'text-danger' : 'text-primary';
-        const legendItem = document.createElement('div');
-
-        legendItem.innerHTML = ` 
-            <strong class="${colorClass}">${isSearched ? '🔍' : '📍'} ${name}</strong>
-            <a href="${shareableLink}" target="_blank"> Share</a>
-            <button class="btn btn-danger btn-sm btn-icon" onclick="removeMarker('${name}')">Remove</button>
-        `;
-        legendContent.appendChild(legendItem);
-    }
-
-    function removeMarker(name) {
-        if (confirm(`Are you sure you want to remove the marker "${name}"?`)) {
-            if (markers[name]) {
-                const marker = markers[name];
-                removedMarkers.push({ name, latlng: marker.getLatLng() }); // Save for undo
-                map.removeLayer(marker);
-                delete markers[name];
-                pinnedEntries.delete(name);
-                searchedEntries.delete(name);
-                updateLegend();
-                saveMarkers();
+                alert("Please enter a search term.");
             }
         }
-    }
 
-    function undoRemoveMarker() {
-        if (removedMarkers.length === 0) {
-            alert("No markers to undo.");
-            return;
+        // Function to create a route using Leaflet Routing Machine
+        function createRoute(start, end) {
+            L.Routing.control({
+                waypoints: [
+                    L.latLng(start.lat, start.lng),
+                    L.latLng(end.lat, end.lng)
+                ],
+                routeWhileDragging: true
+            }).addTo(map);
         }
-        const lastRemoved = removedMarkers.pop();
-        addMarker(lastRemoved.latlng, lastRemoved.name);
-        alert(`Marker "${lastRemoved.name}" has been restored.`);
-    }
-
-    function updateLegend() {
-        const pinnedContent = document.getElementById('pinned-legend-content');
-        const searchedContent = document.getElementById('searched-legend-content');
-        pinnedContent.innerHTML = '';
-        searchedContent.innerHTML = '';
-
-        pinnedEntries.forEach(name => {
-            const marker = markers[name];
-            if (marker) {
-                const latlng = marker.getLatLng();
-                const shareableLink = `${window.location.href.split('?')[0]}?lat=${latlng.lat}&lng=${latlng.lng}&name=${encodeURIComponent(name)}`;
-                addToLegend(name, shareableLink, false);
-            }
-        });
-
-        searchedEntries.forEach(name => {
-            const marker = markers[name];
-            if (marker) {
-                const latlng = marker.getLatLng();
-                const shareableLink = `${window.location.href.split('?')[0]}?lat=${latlng.lat}&lng=${latlng.lng}&name=${encodeURIComponent(name)}`;
-                addToLegend(name, shareableLink, true);
-            }
-        });
-    }
-
-    function saveMarkers() {
-        const savedMarkers = Object.keys(markers).map(name => {
-            const latlng = markers[name].getLatLng();
-            return { name, lat: latlng.lat, lng: latlng.lng };
-        });
-        localStorage.setItem('markers', JSON.stringify(savedMarkers));
-
-        // Save map state
-        const mapState = {
-            lat: map.getCenter().lat,
-            lng: map.getCenter().lng,
-            zoom: map.getZoom()
-        };
-        localStorage.setItem('mapState', JSON.stringify(mapState));
-    }
-
-    document.getElementById('search-button').onclick = debounce(function() {
-        const query = document.getElementById('search-input').value;
-        const loading = document.getElementById('loading');
-        const errorMessage = document.getElementById('error-message');
-        
-        if (query) {
-            loading.style.display = 'inline';
-            errorMessage.textContent = '';
-            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
-                .then(response => response.json())
-                .then(data => {
-                    loading.style.display = 'none';
-                    if (data.length > 0) {
-                        const { lat, lon, display_name } = data[0];
-                        const latlng = L.latLng(lat, lon);
-                        map.setView(latlng, 14);
-                        addMarker(latlng, display_name, true);
-                    } else {
-                        errorMessage.textContent = 'Location not found.';
-                    }
-                })
-                .catch(error => {
-                    loading.style.display = 'none';
-                    errorMessage.textContent = 'Error fetching location.';
-                    console.error('Error fetching location:', error);
-                });
-        }
-    }, 300); // Debounce delay
-
-    document.getElementById('add-pin-button').onclick = function() {
-        const name = document.getElementById('location-name').value.trim() || 'Shared Location';
-        const latlng = map.getCenter();
-        // Check if a pin with this name already exists
-        if (markers[name]) {
-            alert(`A pin with the name "${name}" already exists. Please choose a different name.`);
-            return;
-        }
-        addMarker(latlng, name);
-    };
-
-    document.getElementById('clear-pins-button').onclick = function() {
-        if (confirm('Are you sure you want to clear all pins?')) {
-            for (const name of Object.keys(markers)) {
-                removeMarker(name);
-            }
-            alert('All pins cleared!');
-        }
-    };
-
-    map.on('click', (e) => {
-        const name = document.getElementById('location-name').value.trim();
-        if (!name) {
-            alert('Please enter a location name before clicking on the map.');
-            return;
-        }
-        // Check if a pin with this name already exists
-        if (markers[name]) {
-            alert(`A pin with the name "${name}" already exists. Please choose a different name.`);
-            return;
-        }
-        addMarker(e.latlng, name);
-    });
-
-    function getUrlParams() {
-        const params = new URLSearchParams(window.location.search);
-        return {
-            lat: parseFloat(params.get('lat')),
-            lng: parseFloat(params.get('lng')),
-            name: params.get('name')
-        };
-    }
-
-    const { lat, lng, name } = getUrlParams();
-    if (lat && lng) {
-        const latlng = L.latLng(lat, lng);
-        addMarker(latlng, name || "Shared Location");
-        map.setView(latlng, 15);
-    } else {
-        // Load saved map state
-        const savedMapState = JSON.parse(localStorage.getItem('mapState'));
-        if (savedMapState) {
-            map.setView([savedMapState.lat, savedMapState.lng], savedMapState.zoom);
-        }
-    }
-
-    loadMarkers(); // Load markers on page load
-    createApp({}).mount('#app'); // Optional Vue initialization
-
-    // Debounce function
-    function debounce(func, wait) {
-        let timeout;
-        return function(...args) {
-            const context = this;
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(context, args), wait);
-        };
-    }
-
-    function showError(message) {
-        const errorContainer = document.getElementById('error-container');
-        errorContainer.textContent = message;
-        errorContainer.style.display = 'block';
-        setTimeout(() => {
-            errorContainer.style.display = 'none';
-        }, 5000);
-    }
-
-    document.getElementById('undo-remove-button').onclick = undoRemoveMarker;
-
-    document.getElementById('center-map-button').onclick = function() {
-        map.setView([1.2921, 103.8519], 14);
-    };
-
-</script>
+    </script>
 
 </body>
 </html>
