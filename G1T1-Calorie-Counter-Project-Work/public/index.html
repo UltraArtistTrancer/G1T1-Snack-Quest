@@ -3,25 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dog Lovers App NO MORE</title>
+    <title>Login</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <!-- Bootstrap CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .header {
-            background-color: #f8f9fa;
+            background-color: #2b1d5a;
             padding: 20px 0;
             text-align: center;
         }
-        .get-random-dog {
-            text-align: center;
-            margin-bottom: 20px;
+        body {
+            background-color: rgb(68, 24, 109);
         }
-        .dog-info {
-            padding: 20px;
+        #login-form {
+            color: white;
         }
-        .dog-image {
-            padding: 20px;
+        h2 {
+            color: white;
         }
     </style>
 </head>
@@ -36,38 +35,6 @@
             <button type="submit">Login</button>
             <p>Don't have an account? <a href="#" id="show-register">Register here</a></p>
         </form>
-    </div>
-    <!-- Register Form -->
-    <div id="register-container">
-        <h2>Register</h2>
-        <form id="register-form">
-            <input type="email" id="register-email" placeholder="Email" required>
-            <input type="password" id="register-password" placeholder="Password" required>
-            <button type="submit">Register</button>
-            <p>Already have an account? <a href="#" id="show-login">Login here</a></p>
-        </form>
-    </div>
-
-    <!-- Protected Content -->
-    <div id="app-container">
-        <!-- Your existing Dog Lovers App content -->
-        <div class="header">
-            <h1>Dog Lovers App</h1>
-            <button id="logout-button" class="btn btn-danger">Logout</button>
-        </div>
-
-        <div class="get-random-dog">
-            <button class="btn btn-primary" onclick="getDogImage()">Get Random Dog</button>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6 dog-info">
-                <p id="dogInfo">Dog info from Wikipedia here</p>
-            </div>
-            <div class="col-md-6 dog-image">
-                <img id="dogImg" src="https://via.placeholder.com/400x300" alt="Dog Image" class="img-fluid">
-            </div>
-        </div>
     </div>
 </div>
 
@@ -99,28 +66,11 @@
     const showRegister = document.getElementById('show-register');
     const logoutButton = document.getElementById('logout-button');
 
-    showLogin.addEventListener('click', () => {
-        loginContainer.style.display = 'block';
-        registerContainer.style.display = 'none';
-    });
-
     showRegister.addEventListener('click', () => {
-        loginContainer.style.display = 'none';
-        registerContainer.style.display = 'block';
+        window.location.href = "registration.html";
     });
 
-    registerForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('register-email').value;
-        const password = document.getElementById('register-password').value;
-        try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            alert('Registration successful. Please log in.');
-            showLogin.click();
-        } catch (error) {
-            alert(error.message);
-        }
-    });
+
 
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -133,48 +83,11 @@
         }
     });
 
-    logoutButton.addEventListener('click', async () => {
-        await signOut(auth);
-    });
-
     onAuthStateChanged(auth, (user) => {
         if (user) {
             window.location.href = "3DVersion.html"; 
-        } else {
-            loginContainer.style.display = 'block';
-            registerContainer.style.display = 'none';
-            appContainer.style.display = 'none';
         }
     });
-</script>
-
-<!-- Define getDogImage function in its own script tag -->
-<script>
-    const dogBreeds = ["labrador", "pug", "beagle", "germanshepherd", "maltese", "boxer", "poodle", "chihuahua", "shiba", "bulldog"];
-    const imgElement = document.getElementById('dogImg');
-    const dogInfoElement = document.getElementById('dogInfo');
-
-    async function getDogImage() {
-        const randomBreed = dogBreeds[Math.floor(Math.random() * dogBreeds.length)];
-        
-        try {
-            const dogImgResponse = await axios.get(`https://dog.ceo/api/breed/${randomBreed}/images/random`);
-            imgElement.src = dogImgResponse.data.message;
-        } catch (error) {
-            console.error(`Error fetching image for breed ${randomBreed}:`, error);
-        }
-
-        try {
-            const wikiResponse = await axios.get('https://us-central1-snack-quest.cloudfunctions.net/searchWikipedia', { // use your own cloud function URL
-                params: {
-                    breed: randomBreed
-                }
-            });
-            dogInfoElement.innerHTML = wikiResponse.data;
-        } catch (error) {
-            console.error(`Error fetching wiki info for breed ${randomBreed}:`, error);
-        }
-    }
 </script>
 
 <!-- Bootstrap Bundle with Popper -->
