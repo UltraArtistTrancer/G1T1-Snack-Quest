@@ -4,7 +4,7 @@ const chatList = document.querySelector(".chat-list");
 let userMessage = null;
 
 // API configuration
-const API_KEY = process.env.GEMINI_API_KEY
+const API_KEY = 'AIzaSyDq4SCyitS7UFjOYd_4KcPMpYBW4gdgBFU';
 const API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${API_KEY}`;
 
 // Create a new message element and return it

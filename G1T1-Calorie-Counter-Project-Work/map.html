@@ -54,7 +54,6 @@
                     map: null,
                     searchQuery: '',
                     userLocation: null,
-                    isLoading: false,
                 };
             },
             mounted() {
@@ -64,16 +63,16 @@
             methods: {
                 initializeMap() {
                     this.map = L.map('map').setView([1.2921, 103.8519], 14); // Singapore coordinates
-
+    
                     // Add OpenStreetMap tiles
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         maxZoom: 23,
                         attribution: '© OpenStreetMap contributors'
                     }).addTo(this.map);
-
+    
                     // Geolocation
                     this.map.locate({ setView: true, maxZoom: 18 });
-
+    
                     // Store user location when found
                     this.map.on('locationfound', (e) => {
                         const radius = e.accuracy / 2;
@@ -82,35 +81,37 @@
                         L.circle(e.latlng, radius).addTo(this.map);
                         this.userLocation = e.latlng;  // Store user location
                     });
-
+    
                     this.map.on('locationerror', () => {
                         alert("Unable to retrieve your location. Please allow location access.");
                     });
                 },
                 searchLocation() {
                     if (this.searchQuery) {
-                        this.isLoading = true; // Show loading spinner
-                        
-                        // Check if search query is a postal code (6 digits for Singapore)
-                        let searchUrl = `https://nominatim.openstreetmap.org/search?q=${this.searchQuery}&format=json&limit=1`;
-                        if (/^\d{6}$/.test(this.searchQuery)) {
-                            searchUrl = `https://nominatim.openstreetmap.org/search?postalcode=${this.searchQuery}&country=Singapore&format=json&limit=1`;
+                        // Detect and reformat the input if it contains "Singapore" followed by a postal code
+                        let processedQuery = this.searchQuery.trim();
+                        const postalCodePattern = /Singapore\s*(\d{6})/;
+    
+                        if (processedQuery.match(postalCodePattern)) {
+                            // Reformat to "<postal code> Singapore"
+                            processedQuery = processedQuery.replace(postalCodePattern, '$1 Singapore');
                         }
-
+    
+                        const searchUrl = `https://nominatim.openstreetmap.org/search?q=${processedQuery}&format=json&limit=1`;
+    
                         fetch(searchUrl)
                             .then(response => response.json())
                             .then(data => {
-                                this.isLoading = false; // Hide loading spinner
                                 if (data.length > 0) {
                                     const lat = data[0].lat;
                                     const lon = data[0].lon;
-
+    
                                     // Update the map to the searched location
                                     const destination = L.marker([lat, lon]).addTo(this.map)
                                         .bindPopup(data[0].display_name).openPopup();
-                                    
+    
                                     this.map.setView([lat, lon], 14);
-
+    
                                     // Create route if user location is available
                                     if (this.userLocation) {
                                         this.createRoute(this.userLocation, destination.getLatLng());
@@ -118,16 +119,15 @@
                                         alert("User location not found. Routing may not work.");
                                     }
                                 } else {
-                                    alert("Location or postal code not found. Please try again.");
+                                    alert("Location not found. Please try another search term.");
                                 }
                             })
                             .catch(error => {
-                                this.isLoading = false; // Hide loading spinner
                                 console.error("Error with search:", error);
                                 alert("Error with search. Please try again.");
                             });
                     } else {
-                        alert("Please enter a search term or postal code.");
+                        alert("Please enter a search term.");
                     }
                 },
                 createRoute(start, end) {
@@ -135,7 +135,7 @@
                     if (this.routeControl) {
                         this.map.removeControl(this.routeControl);
                     }
-
+    
                     // Always use the "foot" profile for walking
                     this.routeControl = L.Routing.control({
                         waypoints: [
@@ -153,6 +153,5 @@
             }
         });
     </script>
-
 </body>
 </html>
