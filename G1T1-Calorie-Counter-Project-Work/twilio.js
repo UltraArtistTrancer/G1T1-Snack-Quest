@@ -4,11 +4,13 @@ const cron = require('node-cron');
 const axios = require('axios');
 const moment = require('moment-timezone');  // Add timezone support
 
+const apiKey = process.env.VUE_APP_GOOGLEMAPS_APIKEY ;
+console.log(apiKey);
+
 // Twilio credentials and Google API key from environment variables
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = new twilio(accountSid, authToken);
-const googleApiKey = process.env.GOOGLE_PLACES_API_KEY;
 const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
 
 // ... User data ...
