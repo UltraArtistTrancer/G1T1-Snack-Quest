@@ -2,38 +2,29 @@ require('dotenv').config();
 const twilio = require('twilio');
 const cron = require('node-cron');
 const axios = require('axios');
+const moment = require('moment-timezone');  // Add timezone support
 
-
-// Twilio credentials from your Twilio account
+// Twilio credentials and Google API key from environment variables
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = new twilio(accountSid, authToken);
+const googleApiKey = process.env.GOOGLE_PLACES_API_KEY;
+const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
 
-// Simulated user data with meal times and location
-const users = [
-  {
-    userId: '123',
-    phoneNumber: '', 
-    mealTimes: {
-      breakfast: '08:00',
-      lunch: '13:00',
-      dinner: '19:00'
-    },
-    location: {
-      latitude: 40.7128,
-      longitude: -74.0060
-    }
-  }
-];
+// ... User data ...
 
-// Function to send an SMS via Twilio
 async function sendReminderSMS(user, mealType, recommendations) {
-  const message = `Reminder: Your ${mealType} is in 30 minutes! Here are some nearby places: ${recommendations}`;
+  if (!user.phoneNumber) {
+    console.error('User has no phone number, skipping SMS.');
+    return;
+  }
+
+  const message = `Reminder: Your ${mealType} is in 30 minutes! Nearby places: ${recommendations}`;
   
   try {
     await client.messages.create({
       body: message,
-      from: 'your_twilio_phone_number',  // Replace with your Twilio number
+      from: twilioPhoneNumber,
       to: user.phoneNumber
     });
     console.log(`Reminder sent to ${user.phoneNumber} for ${mealType}`);
@@ -42,45 +33,23 @@ async function sendReminderSMS(user, mealType, recommendations) {
   }
 }
 
-// Function to get nearby restaurant recommendations using Google Places API
-async function getNearbyPlaces(userLocation) {
-  const apiKey = 'your_google_places_api_key';  // Replace with your API key
-  const { latitude, longitude } = userLocation;
-
-  const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=1500&type=restaurant&key=${apiKey}`;
-
-  try {
-    const response = await axios.get(url);
-    const places = response.data.results.slice(0, 3).map(place => place.name).join(', ');
-    return places || 'No recommendations found nearby.';
-  } catch (err) {
-    console.error('Error fetching places: ', err);
-    return 'No recommendations available.';
-  }
+function isThirtyMinutesBeforeMeal(mealTime, timezone) {
+  const mealMoment = moment.tz(mealTime, "HH:mm", timezone);
+  const now = moment.tz(timezone);
+  return now.isSame(mealMoment.subtract(30, 'minutes'), 'minute');
 }
 
-// Function to check if it's 30 minutes before meal time
-function isThirtyMinutesBeforeMeal(mealTime) {
-  const mealDate = new Date();
-  const [hours, minutes] = mealTime.split(':').map(Number);
-  mealDate.setHours(hours, minutes, 0);
-
-  const now = new Date();
-  mealDate.setMinutes(mealDate.getMinutes() - 30);  // 30 minutes before
-
-  return now.getHours() === mealDate.getHours() && now.getMinutes() === mealDate.getMinutes();
-}
-
-// Cron job to check every minute
 cron.schedule('* * * * *', async () => {
   for (const user of users) {
     for (const [mealType, mealTime] of Object.entries(user.mealTimes)) {
-      if (isThirtyMinutesBeforeMeal(mealTime)) {
-        const recommendations = await getNearbyPlaces(user.location);
-        await sendReminderSMS(user, mealType, recommendations);
+      if (isThirtyMinutesBeforeMeal(mealTime, user.timezone)) {
+        try {
+          const recommendations = await getNearbyPlaces(user.location);
+          await sendReminderSMS(user, mealType, recommendations);
+        } catch (error) {
+          console.error(`Error processing reminders for ${user.userId}: ${error.message}`);
+        }
       }
     }
   }
 });
-
-console.log('Scheduled reminder service is running.');
