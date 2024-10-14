@@ -54,26 +54,25 @@
                     map: null,
                     searchQuery: '',
                     userLocation: null,
+                    isLoading: false,
+                    routeControl: null,
+                    googleMapsApiKey: process.env.VUE_APP_GOOGLEMAPS_APIKEY,  // Use .env key here
                 };
             },
             mounted() {
-                // Initialize the map when the component is mounted
                 this.initializeMap();
             },
             methods: {
                 initializeMap() {
                     this.map = L.map('map').setView([1.2921, 103.8519], 14); // Singapore coordinates
     
-                    // Add OpenStreetMap tiles
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         maxZoom: 23,
                         attribution: '© OpenStreetMap contributors'
                     }).addTo(this.map);
     
-                    // Geolocation
                     this.map.locate({ setView: true, maxZoom: 18 });
     
-                    // Store user location when found
                     this.map.on('locationfound', (e) => {
                         const radius = e.accuracy / 2;
                         L.marker(e.latlng).addTo(this.map)
@@ -88,31 +87,30 @@
                 },
                 searchLocation() {
                     if (this.searchQuery) {
-                        // Detect and reformat the input if it contains "Singapore" followed by a postal code
+                        this.isLoading = true;
+
                         let processedQuery = this.searchQuery.trim();
                         const postalCodePattern = /Singapore\s*(\d{6})/;
-    
+
                         if (processedQuery.match(postalCodePattern)) {
-                            // Reformat to "<postal code> Singapore"
                             processedQuery = processedQuery.replace(postalCodePattern, '$1 Singapore');
                         }
+
+                        const geocodingUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(processedQuery)}&key=${this.googleMapsApiKey}`;
     
-                        const searchUrl = `https://nominatim.openstreetmap.org/search?q=${processedQuery}&format=json&limit=1`;
-    
-                        fetch(searchUrl)
+                        fetch(geocodingUrl)
                             .then(response => response.json())
                             .then(data => {
-                                if (data.length > 0) {
-                                    const lat = data[0].lat;
-                                    const lon = data[0].lon;
+                                this.isLoading = false;
+                                if (data.status === "OK" && data.results.length > 0) {
+                                    const lat = data.results[0].geometry.location.lat;
+                                    const lon = data.results[0].geometry.location.lng;
     
-                                    // Update the map to the searched location
                                     const destination = L.marker([lat, lon]).addTo(this.map)
-                                        .bindPopup(data[0].display_name).openPopup();
+                                        .bindPopup(data.results[0].formatted_address).openPopup();
     
                                     this.map.setView([lat, lon], 14);
     
-                                    // Create route if user location is available
                                     if (this.userLocation) {
                                         this.createRoute(this.userLocation, destination.getLatLng());
                                     } else {
@@ -123,6 +121,7 @@
                                 }
                             })
                             .catch(error => {
+                                this.isLoading = false;
                                 console.error("Error with search:", error);
                                 alert("Error with search. Please try again.");
                             });
@@ -131,22 +130,19 @@
                     }
                 },
                 createRoute(start, end) {
-                    // Remove any existing routing layers
                     if (this.routeControl) {
                         this.map.removeControl(this.routeControl);
                     }
     
-                    // Always use the "foot" profile for walking
                     this.routeControl = L.Routing.control({
                         waypoints: [
                             L.latLng(start.lat, start.lng),
                             L.latLng(end.lat, end.lng)
                         ],
                         routeWhileDragging: true,
-                        // Specify walking mode
                         router: L.Routing.osrmv1({
                             serviceUrl: 'https://router.project-osrm.org/route/v1',
-                            profile: 'foot' // Use "foot" for walking routes
+                            profile: 'foot'
                         })
                     }).addTo(this.map);
                 }
