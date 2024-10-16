@@ -59,12 +59,6 @@ function displayLeaderboard(topUsers, currentUser, currentUserRank) {
     }
 }
 
-// Handle logout
-const logoutButton = document.getElementById('logout-button');
-logoutButton.addEventListener('click', async () => {
-    await signOut(auth);
-});
-
 // Auth state change listener
 onAuthStateChanged(auth, (user) => {
     if (user) {

@@ -675,6 +675,32 @@
       <div class="account-page">
         <h2>Account</h2>
         <!-- Content for the account page -->
+        <div id="userInfo">
+          <h3>Current User Information</h3>
+          <p><strong>Username:</strong> <span id="display-username"></span></p>
+          <p><strong>Birthdate:</strong> <span id="display-birthdate"></span></p>
+          <p><strong>Height:</strong> <span id="display-height"></span> cm</p>
+          <p><strong>Weight:</strong> <span id="display-weight"></span> kg</p>
+          <p><strong>Lifestyle:</strong> <span id="display-lifestyle"></span></p>
+          <p><strong>Goals:</strong> <span id="display-goals"></span></p>
+          <p><strong>Breakfast Time:</strong> <span id="display-breakfast-time"></span></p>
+          <p><strong>Lunch Time:</strong> <span id="display-lunch-time"></span></p>
+          <p><strong>Dinner Time:</strong> <span id="display-dinner-time"></span></p>
+        </div>
+        <h3>Update User Information</h3>
+        <form id="updateForm">
+          <input type="text" id="update-username" placeholder="Username" />
+          <input type="date" id="update-birthdate" placeholder="Birthdate" />
+          <input type="number" id="update-height" placeholder="Height (cm)" />
+          <input type="number" id="update-weight" placeholder="Weight (kg)" />
+          <input type="text" id="update-lifestyle" placeholder="Lifestyle" />
+          <input type="text" id="update-goals" placeholder="Goals" />
+          <input type="time" id="update-breakfast-time" placeholder="Breakfast Time" />
+          <input type="time" id="update-lunch-time" placeholder="Lunch Time" />
+          <input type="time" id="update-dinner-time" placeholder="Dinner Time" />
+          <button type="submit">Update</button>
+        </form>  
+        <script type="module" src="AccountUpdate.js"></script>
       </div>
     </div>
   </div>
