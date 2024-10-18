@@ -35,7 +35,8 @@ async function fetchLeaderboard(currentUserId) {
         const currentUserRank = users.findIndex(user => user.id === currentUserId) + 1;
         displayLeaderboard(top10Users, currentUser, currentUserRank);
     } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error fetching users:", error.code);
+        console.error(error.message)
     }
 }
 
@@ -58,6 +59,12 @@ function displayLeaderboard(topUsers, currentUser, currentUserRank) {
         leaderboardContainer.appendChild(noRankEntry);
     }
 }
+
+// Handle logout
+const logoutButton = document.getElementById('logout-button');
+logoutButton.addEventListener('click', async () => {
+    await signOut(auth);
+});
 
 // Auth state change listener
 onAuthStateChanged(auth, (user) => {
