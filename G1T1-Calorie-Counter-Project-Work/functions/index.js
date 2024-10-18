@@ -1,3 +1,5 @@
+/*
+
 const functions = require('firebase-functions');
 const axios = require('axios');
 const cors = require('cors')({origin: true});
@@ -61,3 +63,4 @@ async function getFirstSentence(pageTitle) {
         return "Error occurred while fetching content from Wikipedia.";
     }
 }
+*/
