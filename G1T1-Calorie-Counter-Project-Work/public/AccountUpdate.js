@@ -1,5 +1,4 @@
-// app.js
-
+// Import necessary Firebase functions
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
@@ -21,7 +20,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Your existing fetch and update logic goes here
+// Function to fetch user data
 async function fetchUserData(userId) {
     const docRef = doc(db, "users", userId);
     const docSnap = await getDoc(docRef);
@@ -33,6 +32,7 @@ async function fetchUserData(userId) {
     }
 }
 
+// Populate the form with the user's data
 async function populateUpdateForm(userId) {
     const userData = await fetchUserData(userId);
     if (userData) {
@@ -58,13 +58,50 @@ async function populateUpdateForm(userId) {
     }
 }
 
+// Function to check if a username is unique
+async function isUsernameUnique(username) {
+    const userRef = db.collection('users');
+    const snapshot = await userRef.where('username', '==', username).get();
+    return snapshot.empty; // Return true if no user found with the same username
+}
+
+// Function to handle username check and enable/disable button
+async function checkUsername() {
+    const usernameInput = document.getElementById('update-username').value;
+    const usernameStatus = document.getElementById('username-status');
+
+    if (usernameInput) {
+        const isUnique = await isUsernameUnique(usernameInput);
+        if (isUnique) {
+            usernameStatus.textContent = "Username is available";
+            usernameStatus.style.color = "green";
+        } else {
+            usernameStatus.textContent = "Username is taken";
+            usernameStatus.style.color = "red";
+        }
+    } else {
+        usernameStatus.textContent = "";
+    }
+}
+
+// Add event listener to check username availability on input change
+document.getElementById('check-username-btn').addEventListener('click', checkUsername);
+
+// Form submission event listener
 const updateForm = document.getElementById('updateForm');
 updateForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const userId = auth.currentUser.uid; // Get current user ID
+    const newUsername = document.getElementById('update-username').value;
+
+    // Make sure the username is still available before proceeding
+    if (!(await isUsernameUnique(newUsername))) {
+        alert("Username is taken, please choose another one.");
+        return;
+    }
 
     const updatedData = {
-        username: document.getElementById('update-username').value,
+        username: newUsername,
         birthdate: document.getElementById('update-birthdate').value,
         height: document.getElementById('update-height').value,
         weight: document.getElementById('update-weight').value,
@@ -85,7 +122,6 @@ updateForm.addEventListener('submit', async (e) => {
         alert(error.message);
     }
 });
-
 
 // Call this function when the page loads to populate the form
 onAuthStateChanged(auth, (user) => {
