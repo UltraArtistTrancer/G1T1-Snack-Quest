@@ -677,14 +677,14 @@
         </div>
       </div>
 
-      <!-- New div to display user's details -->
-      <div id="userDetails">
-        <h3>Your Information</h3>
-        <p><strong>Age:</strong> <span id="user-age"></span></p>
-        <p><strong>Height:</strong> <span id="user-height"></span> cm</p>
-        <p><strong>Weight:</strong> <span id="user-weight"></span> kg</p>
-        <p><strong>Lifestyle:</strong> <span id="user-lifestyle"></span></p>
-        <p><strong>Gender:</strong> Male</p> <!-- Hardcoded as Male -->
+      <h2>Account</h2>
+      <!-- Content for the account page -->
+      <div id="userInfo">
+        <h3>Current User Information</h3>
+        <p><strong>Birthdate:</strong> <span id="home-birthdate"></span></p>
+        <p><strong>Height:</strong> <span id="home-height"></span> cm</p>
+        <p><strong>Weight:</strong> <span id="home-weight"></span> kg</p>
+        <p><strong>Lifestyle:</strong> <span id="home-lifestyle"></span></p>
       </div>
     </div>
 
@@ -1128,46 +1128,6 @@
       if (event.target === nutritionPopup) {
         nutritionPopup.style.display = 'none';
       }
-    });
-
-    // Function to calculate age from birthdate
-    function calculateAge(birthdate) {
-        const today = new Date();
-        const birthDate = new Date(birthdate);
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const monthDiff = today.getMonth() - birthDate.getMonth();
-        
-        // Adjust age if the birthday hasn't occurred this year yet
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-        }
-        
-        return age;
-    }
-
-    // Function to populate the user details on the Home page
-    async function populateUserDetailsOnHomePage(userId) {
-        const userData = await fetchUserData(userId);
-        if (userData) {
-            // Calculate age from birthdate
-            const age = calculateAge(userData.birthdate);
-            
-            // Populate the new div on Home page
-            document.getElementById('user-age').textContent = age;
-            document.getElementById('user-height').textContent = userData.height;
-            document.getElementById('user-weight').textContent = userData.weight;
-            document.getElementById('user-lifestyle').textContent = userData.lifestyle;
-        }
-    }
-
-    // Fetch user details and populate the home page when the user is logged in
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            const userId = user.uid;
-            populateUserDetailsOnHomePage(userId); // Call the function to populate user details on Home
-        } else {
-            console.log("No user is signed in.");
-        }
     });
   </script>
 
