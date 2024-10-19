@@ -479,6 +479,58 @@
             transform:rotate(360deg);
         }
     }
+
+    /* Pop-up Styles */
+    .popup {
+      display: none; /* Hidden by default */
+      position: fixed;
+      z-index: 999; /* Ensure the pop-up is above other elements */
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      max-width: 400px;
+      background-color: rgba(0, 0, 0, 0.9); /* Semi-transparent black background */
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      color: white;
+    }
+
+    .popup-content {
+      position: relative;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .popup-content h3 {
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    .popup-content input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 16px;
+    }
+
+    .popup-content input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Close Button */
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      color: red;
+      font-size: 24px;
+      cursor: pointer;
+    }
   </style>
   <script>
     // DO NOT MODIFY THIS ARRAY
@@ -608,21 +660,38 @@
         </div>
       </div>
 
-      <!-- Suggestion and Play Section -->
-      <div class="suggestion-play-section">
-        <!-- Suggestion Box -->
-        <div class="suggestion-box">
-          <h3>Need suggestions on what to eat?<br>Fill in your location here!</h3>
-          <input id="locationInput" type="text" placeholder="Enter your location">
-        </div>
-        <!-- Play Button -->
-        <div class="play-button-container">
-          <div class="play-button">
-            <h3 style="font-family: 'Comic Sans MS', cursive, sans-serif;">Calculate My Nutrition</h3>
-            <p>What have you eaten today?</p>
-          </div>
+      <!-- Play Button -->
+      <div class="play-button-container">
+        <div class="play-button">
+          <h3 style="font-family: 'Comic Sans MS', cursive, sans-serif;">Calculate My Nutrition</h3>
+          <p>What have you eaten today?</p>
         </div>
       </div>
+
+      <!-- Pop-up Textbox -->
+      <div id="nutritionPopup" class="popup">
+        <div class="popup-content">
+          <span id="closePopup" class="close">&times;</span>
+          <h3>What have you just eaten?</h3>
+          <input type="text" id="foodInput" placeholder="What have you just eaten?">
+        </div>
+      </div>
+
+      <h2>Account</h2>
+        <!-- Content for the account page -->
+        <div id="userInfo">
+          <h3>Current User Information</h3>
+          <p hidden><strong>Username:</strong> <span id="home-username"></span></p>
+          <p><strong>Birthdate:</strong> <span id="home-birthdate"></span></p>
+          <p><strong>Height:</strong> <span id="home-height"></span> cm</p>
+          <p><strong>Weight:</strong> <span id="home-weight"></span> kg</p>
+          <p><strong>Lifestyle:</strong> <span id="home-lifestyle"></span></p>
+          <p hidden><strong>Goals:</strong> <span id="home-goals"></span></p>
+          <p hidden><strong>Breakfast Time:</strong> <span id="home-breakfast-time"></span></p>
+          <p hidden><strong>Lunch Time:</strong> <span id="home-lunch-time"></span></p>
+          <p hidden><strong>Dinner Time:</strong> <span id="home-dinner-time"></span></p>
+        </div>
+        <script type="module" src="HomeUpdate.js"></script>
     </div>
 
     <!-- Leaderboard Page -->
@@ -675,61 +744,34 @@
       <div class="account-page">
         <h2>Account</h2>
         <!-- Content for the account page -->
+        <div id="userInfo">
+          <h3>Current User Information</h3>
+          <p><strong>Username:</strong> <span id="display-username"></span></p>
+          <p><strong>Birthdate:</strong> <span id="display-birthdate"></span></p>
+          <p><strong>Height:</strong> <span id="display-height"></span> cm</p>
+          <p><strong>Weight:</strong> <span id="display-weight"></span> kg</p>
+          <p><strong>Lifestyle:</strong> <span id="display-lifestyle"></span></p>
+          <p><strong>Goals:</strong> <span id="display-goals"></span></p>
+          <p><strong>Breakfast Time:</strong> <span id="display-breakfast-time"></span></p>
+          <p><strong>Lunch Time:</strong> <span id="display-lunch-time"></span></p>
+          <p><strong>Dinner Time:</strong> <span id="display-dinner-time"></span></p>
+        </div>
+        <h3>Update User Information</h3>
+        <form id="updateForm">
+          <input type="text" id="update-username" placeholder="Username" />
+          <input type="date" id="update-birthdate" placeholder="Birthdate" />
+          <input type="number" id="update-height" placeholder="Height (cm)" />
+          <input type="number" id="update-weight" placeholder="Weight (kg)" />
+          <input type="text" id="update-lifestyle" placeholder="Lifestyle" />
+          <input type="text" id="update-goals" placeholder="Goals" />
+          <input type="time" id="update-breakfast-time" placeholder="Breakfast Time" />
+          <input type="time" id="update-lunch-time" placeholder="Lunch Time" />
+          <input type="time" id="update-dinner-time" placeholder="Dinner Time" />
+          <button type="submit">Update</button>
+        </form>  
+        <script type="module" src="AccountUpdate.js"></script>
       </div>
     </div>
-  </div>
-
-  <!-- Map Popup -->
-  <div id="mapPopup" class="map-popup">
-    <span class="map-close">&times;</span>
-    <!-- Simplified SVG Map of Singapore -->
-    <svg viewBox="0 0 300 200">
-      <!-- North -->
-      <g class="map-group" data-region="North">
-        <path class="map-region" d="M100,20 L200,20 L200,60 L100,60 Z"></path>
-        <text x="150" y="45" fill="#fff" font-size="12" text-anchor="middle">North</text>
-      </g>
-      <!-- Northeast -->
-      <g class="map-group" data-region="Northeast">
-        <path class="map-region" d="M200,20 L280,60 L280,100 L200,60 Z"></path>
-        <text x="240" y="70" fill="#fff" font-size="12" text-anchor="middle">Northeast</text>
-      </g>
-      <!-- East -->
-      <g class="map-group" data-region="East">
-        <path class="map-region" d="M200,60 L280,100 L280,140 L200,100 Z"></path>
-        <text x="240" y="110" fill="#fff" font-size="12" text-anchor="middle">East</text>
-      </g>
-      <!-- Southeast -->
-      <g class="map-group" data-region="Southeast">
-        <path class="map-region" d="M200,100 L280,140 L280,180 L200,140 Z"></path>
-        <text x="240" y="150" fill="#fff" font-size="12" text-anchor="middle">Southeast</text>
-      </g>
-      <!-- South -->
-      <g class="map-group" data-region="South">
-        <path class="map-region" d="M100,140 L200,140 L200,180 L100,180 Z"></path>
-        <text x="150" y="165" fill="#fff" font-size="12" text-anchor="middle">South</text>
-      </g>
-      <!-- Southwest -->
-      <g class="map-group" data-region="Southwest">
-        <path class="map-region" d="M20,140 L100,140 L100,180 L20,180 Z"></path>
-        <text x="60" y="165" fill="#fff" font-size="12" text-anchor="middle">Southwest</text>
-      </g>
-      <!-- West -->
-      <g class="map-group" data-region="West">
-        <path class="map-region" d="M20,100 L100,100 L100,140 L20,140 Z"></path>
-        <text x="60" y="125" fill="#fff" font-size="12" text-anchor="middle">West</text>
-      </g>
-      <!-- Northwest -->
-      <g class="map-group" data-region="Northwest">
-        <path class="map-region" d="M20,60 L100,60 L100,100 L20,100 Z"></path>
-        <text x="60" y="85" fill="#fff" font-size="12" text-anchor="middle">Northwest</text>
-      </g>
-      <!-- Central -->
-      <g class="map-group" data-region="Central">
-        <path class="map-region" d="M100,60 L200,60 L200,140 L100,140 Z"></path>
-        <text x="150" y="100" fill="#fff" font-size="12" text-anchor="middle">Central</text>
-      </g>
-    </svg>
   </div>
 
   <!-- Include Bootstrap JS -->
@@ -829,42 +871,6 @@
       setTimeout(() => {
         portal.remove();
       }, 500);
-    });
-
-    // Map Popup Functionality
-    const locationInput = document.getElementById('locationInput');
-    const mapPopup = document.getElementById('mapPopup');
-    const mapClose = document.querySelector('.map-close');
-
-    locationInput.addEventListener('click', function() {
-      mapPopup.style.display = 'block';
-    });
-
-    mapClose.addEventListener('click', function() {
-      mapPopup.style.display = 'none';
-    });
-
-    // Map Region Hover Effect and Click Handling
-    const mapGroups = document.querySelectorAll('.map-group');
-    mapGroups.forEach(group => {
-      const region = group.getAttribute('data-region');
-      const path = group.querySelector('.map-region');
-      const text = group.querySelector('text');
-
-      group.addEventListener('mouseover', function() {
-        path.style.fill = '#44af35';
-        text.style.fill = '#44af35';
-      });
-
-      group.addEventListener('mouseout', function() {
-        path.style.fill = '#009bd9';
-        text.style.fill = '#fff';
-      });
-
-      group.addEventListener('click', function() {
-        document.getElementById('locationInput').value = region;
-        mapPopup.style.display = 'none';
-      });
     });
 
     // Navigation Functionality
@@ -1107,6 +1113,28 @@
             // while (hint.children.length > 0) {
             //     hint.children[0].remove();
     }
+
+    // JavaScript for handling pop-up visibility
+    const nutritionPopup = document.getElementById('nutritionPopup');
+    const closePopup = document.getElementById('closePopup');
+    const playButton = document.querySelector('.play-button');
+
+    // Show pop-up when "Calculate My Nutrition" button is clicked
+    playButton.addEventListener('click', function() {
+      nutritionPopup.style.display = 'block';
+    });
+
+    // Hide pop-up when the red cross is clicked
+    closePopup.addEventListener('click', function() {
+      nutritionPopup.style.display = 'none';
+    });
+
+    // Optional: Close the pop-up when clicking outside of it
+    window.addEventListener('click', function(event) {
+      if (event.target === nutritionPopup) {
+        nutritionPopup.style.display = 'none';
+      }
+    });
   </script>
 
 </body>

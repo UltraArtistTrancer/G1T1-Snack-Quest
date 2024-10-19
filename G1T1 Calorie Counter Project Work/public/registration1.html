@@ -225,7 +225,7 @@
             <!-- Calculated Age -->
             <div class="mb-3">
                 <label for="calculated-age" class="form-label">Your Age</label>
-                <div id="calculated-age" class="form-control">&nbsp;</div>
+                <div id="calculated-age" class="form-control"></div>
             </div>
 
             <!-- Height -->
@@ -305,15 +305,9 @@
 
             if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthdate.getDate())) {
                 age--;
-            };
+            }
 
-            if (isNaN(age)) {
-                calculatedAgeDiv.innerHTML = "&nbsp;";
-            } else if (age > 120 || age < 0) {
-                calculatedAgeDiv.innerText = "Please ensure age is within 0 to 120";
-            } else {
-                calculatedAgeDiv.textContent = `You are ${age} years old.`;
-            };
+            calculatedAgeDiv.textContent = `You are ${age} years old.`;
         });
     </script>
 </body>
