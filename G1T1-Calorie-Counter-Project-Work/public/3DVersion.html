@@ -479,6 +479,58 @@
             transform:rotate(360deg);
         }
     }
+
+    /* Pop-up Styles */
+    .popup {
+      display: none; /* Hidden by default */
+      position: fixed;
+      z-index: 999; /* Ensure the pop-up is above other elements */
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      max-width: 400px;
+      background-color: rgba(0, 0, 0, 0.9); /* Semi-transparent black background */
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      color: white;
+    }
+
+    .popup-content {
+      position: relative;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .popup-content h3 {
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    .popup-content input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 16px;
+    }
+
+    .popup-content input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Close Button */
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      color: red;
+      font-size: 24px;
+      cursor: pointer;
+    }
   </style>
   <script>
     // DO NOT MODIFY THIS ARRAY
@@ -608,20 +660,31 @@
         </div>
       </div>
 
-      <!-- Suggestion and Play Section -->
-      <div class="suggestion-play-section">
-        <!-- Suggestion Box -->
-        <div class="suggestion-box">
-          <h3>Need suggestions on what to eat?<br>Fill in your location here!</h3>
-          <input id="locationInput" type="text" placeholder="Enter your location">
+      <!-- Play Button -->
+      <div class="play-button-container">
+        <div class="play-button">
+          <h3 style="font-family: 'Comic Sans MS', cursive, sans-serif;">Calculate My Nutrition</h3>
+          <p>What have you eaten today?</p>
         </div>
-        <!-- Play Button -->
-        <div class="play-button-container">
-          <div class="play-button">
-            <h3 style="font-family: 'Comic Sans MS', cursive, sans-serif;">Calculate My Nutrition</h3>
-            <p>What have you eaten today?</p>
-          </div>
+      </div>
+
+      <!-- Pop-up Textbox -->
+      <div id="nutritionPopup" class="popup">
+        <div class="popup-content">
+          <span id="closePopup" class="close">&times;</span>
+          <h3>What have you just eaten?</h3>
+          <input type="text" id="foodInput" placeholder="What have you just eaten?">
         </div>
+      </div>
+
+      <!-- New div to display user's details -->
+      <div id="userDetails">
+        <h3>Your Information</h3>
+        <p><strong>Age:</strong> <span id="user-age"></span></p>
+        <p><strong>Height:</strong> <span id="user-height"></span> cm</p>
+        <p><strong>Weight:</strong> <span id="user-weight"></span> kg</p>
+        <p><strong>Lifestyle:</strong> <span id="user-lifestyle"></span></p>
+        <p><strong>Gender:</strong> Male</p> <!-- Hardcoded as Male -->
       </div>
     </div>
 
@@ -703,59 +766,6 @@
         <script type="module" src="AccountUpdate.js"></script>
       </div>
     </div>
-  </div>
-
-  <!-- Map Popup -->
-  <div id="mapPopup" class="map-popup">
-    <span class="map-close">&times;</span>
-    <!-- Simplified SVG Map of Singapore -->
-    <svg viewBox="0 0 300 200">
-      <!-- North -->
-      <g class="map-group" data-region="North">
-        <path class="map-region" d="M100,20 L200,20 L200,60 L100,60 Z"></path>
-        <text x="150" y="45" fill="#fff" font-size="12" text-anchor="middle">North</text>
-      </g>
-      <!-- Northeast -->
-      <g class="map-group" data-region="Northeast">
-        <path class="map-region" d="M200,20 L280,60 L280,100 L200,60 Z"></path>
-        <text x="240" y="70" fill="#fff" font-size="12" text-anchor="middle">Northeast</text>
-      </g>
-      <!-- East -->
-      <g class="map-group" data-region="East">
-        <path class="map-region" d="M200,60 L280,100 L280,140 L200,100 Z"></path>
-        <text x="240" y="110" fill="#fff" font-size="12" text-anchor="middle">East</text>
-      </g>
-      <!-- Southeast -->
-      <g class="map-group" data-region="Southeast">
-        <path class="map-region" d="M200,100 L280,140 L280,180 L200,140 Z"></path>
-        <text x="240" y="150" fill="#fff" font-size="12" text-anchor="middle">Southeast</text>
-      </g>
-      <!-- South -->
-      <g class="map-group" data-region="South">
-        <path class="map-region" d="M100,140 L200,140 L200,180 L100,180 Z"></path>
-        <text x="150" y="165" fill="#fff" font-size="12" text-anchor="middle">South</text>
-      </g>
-      <!-- Southwest -->
-      <g class="map-group" data-region="Southwest">
-        <path class="map-region" d="M20,140 L100,140 L100,180 L20,180 Z"></path>
-        <text x="60" y="165" fill="#fff" font-size="12" text-anchor="middle">Southwest</text>
-      </g>
-      <!-- West -->
-      <g class="map-group" data-region="West">
-        <path class="map-region" d="M20,100 L100,100 L100,140 L20,140 Z"></path>
-        <text x="60" y="125" fill="#fff" font-size="12" text-anchor="middle">West</text>
-      </g>
-      <!-- Northwest -->
-      <g class="map-group" data-region="Northwest">
-        <path class="map-region" d="M20,60 L100,60 L100,100 L20,100 Z"></path>
-        <text x="60" y="85" fill="#fff" font-size="12" text-anchor="middle">Northwest</text>
-      </g>
-      <!-- Central -->
-      <g class="map-group" data-region="Central">
-        <path class="map-region" d="M100,60 L200,60 L200,140 L100,140 Z"></path>
-        <text x="150" y="100" fill="#fff" font-size="12" text-anchor="middle">Central</text>
-      </g>
-    </svg>
   </div>
 
   <!-- Include Bootstrap JS -->
@@ -855,42 +865,6 @@
       setTimeout(() => {
         portal.remove();
       }, 500);
-    });
-
-    // Map Popup Functionality
-    const locationInput = document.getElementById('locationInput');
-    const mapPopup = document.getElementById('mapPopup');
-    const mapClose = document.querySelector('.map-close');
-
-    locationInput.addEventListener('click', function() {
-      mapPopup.style.display = 'block';
-    });
-
-    mapClose.addEventListener('click', function() {
-      mapPopup.style.display = 'none';
-    });
-
-    // Map Region Hover Effect and Click Handling
-    const mapGroups = document.querySelectorAll('.map-group');
-    mapGroups.forEach(group => {
-      const region = group.getAttribute('data-region');
-      const path = group.querySelector('.map-region');
-      const text = group.querySelector('text');
-
-      group.addEventListener('mouseover', function() {
-        path.style.fill = '#44af35';
-        text.style.fill = '#44af35';
-      });
-
-      group.addEventListener('mouseout', function() {
-        path.style.fill = '#009bd9';
-        text.style.fill = '#fff';
-      });
-
-      group.addEventListener('click', function() {
-        document.getElementById('locationInput').value = region;
-        mapPopup.style.display = 'none';
-      });
     });
 
     // Navigation Functionality
@@ -1133,6 +1107,68 @@
             // while (hint.children.length > 0) {
             //     hint.children[0].remove();
     }
+
+    // JavaScript for handling pop-up visibility
+    const nutritionPopup = document.getElementById('nutritionPopup');
+    const closePopup = document.getElementById('closePopup');
+    const playButton = document.querySelector('.play-button');
+
+    // Show pop-up when "Calculate My Nutrition" button is clicked
+    playButton.addEventListener('click', function() {
+      nutritionPopup.style.display = 'block';
+    });
+
+    // Hide pop-up when the red cross is clicked
+    closePopup.addEventListener('click', function() {
+      nutritionPopup.style.display = 'none';
+    });
+
+    // Optional: Close the pop-up when clicking outside of it
+    window.addEventListener('click', function(event) {
+      if (event.target === nutritionPopup) {
+        nutritionPopup.style.display = 'none';
+      }
+    });
+
+    // Function to calculate age from birthdate
+    function calculateAge(birthdate) {
+        const today = new Date();
+        const birthDate = new Date(birthdate);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        
+        // Adjust age if the birthday hasn't occurred this year yet
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        
+        return age;
+    }
+
+    // Function to populate the user details on the Home page
+    async function populateUserDetailsOnHomePage(userId) {
+        const userData = await fetchUserData(userId);
+        if (userData) {
+            // Calculate age from birthdate
+            const age = calculateAge(userData.birthdate);
+            
+            // Populate the new div on Home page
+            document.getElementById('user-age').textContent = age;
+            document.getElementById('user-height').textContent = userData.height;
+            document.getElementById('user-weight').textContent = userData.weight;
+            document.getElementById('user-lifestyle').textContent = userData.lifestyle;
+        }
+    }
+
+    // Fetch user details and populate the home page when the user is logged in
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            const userId = user.uid;
+            populateUserDetailsOnHomePage(userId); // Call the function to populate user details on Home
+        } else {
+            console.log("No user is signed in.");
+        }
+    });
   </script>
 
 </body>
