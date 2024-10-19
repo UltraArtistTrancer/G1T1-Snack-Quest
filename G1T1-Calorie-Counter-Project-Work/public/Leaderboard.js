@@ -16,19 +16,26 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+console.log("Firebase App Initialized:", app);
+
 const auth = getAuth(app);
+console.log("Firebase Auth Initialized:", auth);
+
 const db = getFirestore(app);
+console.log("Firebase Firestore Initialized:", db);
 
 // Fetch leaderboard function
 async function fetchLeaderboard(currentUserId) {
     const usersCollectionRef = collection(db, "users");
     try {
         const querySnapshot = await getDocs(usersCollectionRef);
+        console.log("Query Snapshot:", querySnapshot); // Log the snapshot
         const users = [];
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             users.push({ id: doc.id, ...data });
         });
+        console.log("Users:", users); // Log the users array
         users.sort((a, b) => b.weight - a.weight);
         const top10Users = users.slice(0, 10);
         const currentUser = users.find(user => user.id === currentUserId);
@@ -36,7 +43,7 @@ async function fetchLeaderboard(currentUserId) {
         displayLeaderboard(top10Users, currentUser, currentUserRank);
     } catch (error) {
         console.error("Error fetching users:", error.code);
-        console.error(error.message)
+        console.error(error.message);
     }
 }
 
