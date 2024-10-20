@@ -115,78 +115,113 @@
         }
     </script>
 
-    <script type="module">
-            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-            import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
-            import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+    import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-functions.js";
 
-            // Fill in with your own web app's Firebase configuration
-            const firebaseConfig = {
-                apiKey: "AIzaSyBAhYdiPIDo0OtV-RoIiRVQCxvgofMb0js",
-                authDomain: "snack-quest.firebaseapp.com",
-                databaseURL: "https://snack-quest-default-rtdb.asia-southeast1.firebasedatabase.app",
-                projectId: "snack-quest",
-                storageBucket: "snack-quest.appspot.com",
-                messagingSenderId: "974726219698",
-                appId: "1:974726219698:web:361c5bf4bf98a8798c86ab",
-                measurementId: "G-YXRNC4ZPTZ"
+    // Fill in with your own web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBAhYdiPIDo0OtV-RoIiRVQCxvgofMb0js",
+        authDomain: "snack-quest.firebaseapp.com",
+        databaseURL: "https://snack-quest-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "snack-quest",
+        storageBucket: "snack-quest.appspot.com",
+        messagingSenderId: "974726219698",
+        appId: "1:974726219698:web:361c5bf4bf98a8798c86ab",
+        measurementId: "G-YXRNC4ZPTZ"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);  // Make sure Firestore is initialized
+    const functions = getFunctions(app);
+
+    const registerForm = document.getElementById('registrationForm'); 
+
+    const checkUsernameFunction = httpsCallable(functions, 'checkUsername');
+
+    // Function to check if the username is taken
+    async function isUsernameUnique(username) {
+        try {
+            const result = await checkUsernameFunction({ username });
+            return result.data.available; // Returns true if available, false otherwise
+        } catch (error) {
+            console.error("Error checking username:", error);
+            return false; // Assume the username is taken if an error occurs
+        }
+    }
+
+    // Attach the checkUsername function to a button click event
+    document.getElementById('check-username-btn').addEventListener('click', async () => {
+        const username = document.getElementById('username').value;
+        const usernameStatus = document.getElementById('username-status');
+        
+        const isUnique = await isUsernameUnique(username);
+        if (isUnique) {
+            usernameStatus.textContent = "Username is available";
+            usernameStatus.style.color = "green";
+        } else {
+            usernameStatus.textContent = "Username is already taken";
+            usernameStatus.style.color = "red";
+        }
+    });
+
+    registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+        const username = document.getElementById('username').value;
+        const birthdate = document.getElementById('birthdate').value;
+        const height = document.getElementById('height').value;
+        const weight = document.getElementById('weight').value;
+        const lifestyle = document.getElementById('lifestyle').value;
+        const goals = document.getElementById('goals').value;
+        const breakfastTime = document.getElementById('breakfast-time').value;
+        const lunchTime = document.getElementById('lunch-time').value;
+        const dinnerTime = document.getElementById('dinner-time').value;
+
+        try {
+            // Check if the username is unique
+            const isUnique = await isUsernameUnique(username);
+            if (!isUnique) {
+                alert("Username is already taken. Please choose another one.");
+                return;
+            }
+
+            // Create user with email and password
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const userId = userCredential.user.uid;
+
+            // Prepare user data for Firestore
+            const userData = {
+                username,
+                birthdate,
+                height,
+                weight,
+                lifestyle,
+                goals,
+                mealTimes: {
+                    breakfast: breakfastTime,
+                    lunch: lunchTime,
+                    dinner: dinnerTime
+                }
             };
 
-            const app = initializeApp(firebaseConfig);
-            const auth = getAuth(app);
-            const db = getFirestore(app);
+            // Save user data to Firestore
+            await setDoc(doc(db, "users", userId), userData);
+            alert('Registration successful! Redirecting to the main page.');
+            window.location.href = "3DVersion.html";
+        } catch (error) {
+            console.error("Error during registration:", error);
+            alert(error.message);
+        }
+    });
+</script>
 
-            const loginContainer = document.getElementById('login-container');
-            const appContainer = document.getElementById('app-container');
-            const loginForm = document.getElementById('login-form');
-            const registerForm = document.getElementById('registrationForm'); 
-            const showRegister = document.getElementById('show-register');
-            const logoutButton = document.getElementById('logout-button');
 
-
-            registerForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const email = document.getElementById('register-email').value;
-                const password = document.getElementById('register-password').value;
-                const username = document.getElementById('username').value;
-                const birthdate = document.getElementById('birthdate').value;
-                const height = document.getElementById('height').value;
-                const weight = document.getElementById('weight').value;
-                const lifestyle = document.getElementById('lifestyle').value;
-                const goals = document.getElementById('goals').value;
-                const breakfastTime = document.getElementById('breakfast-time').value;
-                const lunchTime = document.getElementById('lunch-time').value;
-                const dinnerTime = document.getElementById('dinner-time').value;
-
-                try {
-                    // Create user with email and password
-                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                    const userId = userCredential.user.uid;
-
-                    // Prepare user data for Firestore
-                    const userData = {
-                        username,
-                        birthdate,
-                        height,
-                        weight,
-                        lifestyle,
-                        goals,
-                        mealTimes: {
-                            breakfast: breakfastTime,
-                            lunch: lunchTime,
-                            dinner: dinnerTime
-                        }
-                    };
-
-                // Save user data to Firestore
-                await setDoc(doc(db, "users", userId), userData);
-                alert('Entering Main Page');
-                window.location.href = "3DVersion.html";
-            } catch (error) {
-                alert(error.message);
-            }
-        });
-    </script>
 
     <div class="container mt-5">
         <h2 class="text-center">Registration Form</h2>
@@ -197,9 +232,11 @@
             <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
                 <input type="text" class="form-control" id="username" placeholder="Enter a username" required>
+                <button type="button" class="btn btn-secondary mt-2" id="check-username-btn">Check Username</button>
+                <div id="username-status" class="form-text mt-2"></div>
             </div>
             <div class="mb-3">
-                    <label for="username" class="form-label">Email</label>
+                    <label for="email" class="form-label">Email</label>
                     <input type="email" class="form-control" id="register-email" placeholder="Email" required>                    
             </div>
 

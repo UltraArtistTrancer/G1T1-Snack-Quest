@@ -64,3 +64,26 @@ async function getFirstSentence(pageTitle) {
     }
 }
 */
+
+// index.js in your 'functions' directory
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+admin.initializeApp();
+
+const db = admin.firestore();
+
+exports.checkUsername = functions.https.onCall(async (data, context) => {
+    const username = data.username;
+    if (!username) {
+        throw new functions.https.HttpsError("invalid-argument", "Username is required.");
+    }
+
+    const usersRef = db.collection("users");
+    const snapshot = await usersRef.where("username", "==", username).get();
+
+    if (snapshot.empty) {
+        return { available: true };
+    } else {
+        return { available: false };
+    }
+});
