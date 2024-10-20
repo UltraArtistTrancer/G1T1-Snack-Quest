@@ -1,7 +1,7 @@
 // Import necessary Firebase functions
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
-import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -60,8 +60,9 @@ async function populateUpdateForm(userId) {
 
 // Function to check if a username is unique
 async function isUsernameUnique(username) {
-    const userRef = db.collection('users');
-    const snapshot = await userRef.where('username', '==', username).get();
+    const userRef = collection(db, 'users'); // Get the reference to the 'users' collection
+    const q = query(userRef, where('username', '==', username)); // Create a query for the username
+    const snapshot = await getDocs(q); // Execute the query and get the snapshot
     return snapshot.empty; // Return true if no user found with the same username
 }
 
@@ -84,7 +85,7 @@ async function checkUsername() {
     }
 }
 
-// Add event listener to check username availability on input change
+// Add event listener to check username availability on button click
 document.getElementById('check-username-btn').addEventListener('click', checkUsername);
 
 // Form submission event listener
