@@ -49,18 +49,11 @@ async function fetchNutritionData() {
             resolve(); // Resolve the promise when done
         })
         .catch(error => {
-            document.getElementById('result').innerHTML = `<p>Error: ${error.message}</p>`;
             reject(error); // Reject the promise in case of error
         });
     });
 }
 
-// Add this to your form submission code
-document.getElementById('registrationForm').addEventListener('submit', async function(event) {
-    event.preventDefault(); // Prevent the default form submission
 
-    // Call fetchNutritionData and wait for it to complete
-    await fetchNutritionData(); // This will wait for the nutrition data to be populated
-
-    // Now you can safely gather user input and submit to Firestore
-});
+// Export the function for use in other modules
+export { fetchNutritionData };

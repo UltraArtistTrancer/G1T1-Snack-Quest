@@ -2,6 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+import { fetchNutritionData } from './NutritionAPI.js';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -37,10 +38,10 @@ async function populateUpdateForm(userId) {
     const userData = await fetchUserData(userId);
     if (userData) {
         document.getElementById('update-username').value = userData.username;
-        document.getElementById('update-birthdate').value = userData.birthdate;
-        document.getElementById('update-height').value = userData.height;
-        document.getElementById('update-weight').value = userData.weight;
-        document.getElementById('update-lifestyle').value = userData.lifestyle;
+        document.getElementById('birthdate').value = userData.birthdate;
+        document.getElementById('height').value = userData.height;
+        document.getElementById('weight').value = userData.weight;
+        document.getElementById('lifestyle').value = userData.lifestyle;
         document.getElementById('update-goals').value = userData.goals;
         document.getElementById('update-breakfast-time').value = userData.mealTimes.breakfast;
         document.getElementById('update-lunch-time').value = userData.mealTimes.lunch;
@@ -70,10 +71,12 @@ async function isUsernameUnique(username) {
 async function checkUsername() {
     const usernameInput = document.getElementById('update-username').value;
     const usernameStatus = document.getElementById('username-status');
+    const currentUsername =  document.getElementById('display-username').textContent;
+    console.log("Current Username:", currentUsername)
 
     if (usernameInput) {
         const isUnique = await isUsernameUnique(usernameInput);
-        if (isUnique) {
+        if (isUnique || usernameInput===currentUsername) {
             usernameStatus.textContent = "Username is available";
             usernameStatus.style.color = "green";
         } else {
@@ -92,35 +95,49 @@ document.getElementById('check-username-btn').addEventListener('click', checkUse
 const updateForm = document.getElementById('updateForm');
 updateForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const userId = auth.currentUser.uid; // Get current user ID
-    const newUsername = document.getElementById('update-username').value;
-
-    // Make sure the username is still available before proceeding
-    if (!(await isUsernameUnique(newUsername))) {
-        alert("Username is taken, please choose another one.");
-        return;
-    }
-
-    const updatedData = {
-        username: newUsername,
-        birthdate: document.getElementById('update-birthdate').value,
-        height: document.getElementById('update-height').value,
-        weight: document.getElementById('update-weight').value,
-        lifestyle: document.getElementById('update-lifestyle').value,
-        goals: document.getElementById('update-goals').value,
-        mealTimes: {
-            breakfast: document.getElementById('update-breakfast-time').value,
-            lunch: document.getElementById('update-lunch-time').value,
-            dinner: document.getElementById('update-dinner-time').value
-        }
-    };
 
     try {
+        // Call fetchNutritionData and wait for it to complete
+        await fetchNutritionData(); // This will populate the nutrition data
+
+        const userId = auth.currentUser.uid; // Get current user ID
+        const newUsername = document.getElementById('update-username').value;
+        const currentUsername =  document.getElementById('display-username').textContent;
+
+        // Ensure the username is still available
+        if (!(await isUsernameUnique(newUsername) || newUsername===currentUsername)) {
+            alert("Username is taken, please choose another one.");
+            return;
+        }
+
+        const updatedData = {
+            username: newUsername,
+            birthdate: document.getElementById('birthdate').value,
+            height: document.getElementById('height').value,
+            weight: document.getElementById('weight').value,
+            lifestyle: document.getElementById('lifestyle').value,
+            goals: document.getElementById('update-goals').value,
+            mealTimes: {
+                breakfast: document.getElementById('update-breakfast-time').value,
+                lunch: document.getElementById('update-lunch-time').value,
+                dinner: document.getElementById('update-dinner-time').value,
+            },
+            // Nutrition fields
+            sex: document.getElementById('sex').value,
+            carbohydrates: document.getElementById('carbohydrates').value,
+            protein: document.getElementById('protein').value,
+            fat: document.getElementById('fat').value,
+            fiber: document.getElementById('fiber').value,
+            bmi: document.getElementById('bmi').value,
+            calorieNeeds: document.getElementById('calorieNeeds').value,
+        };
+
         await updateDoc(doc(db, "users", userId), updatedData);
         alert('User data updated successfully!');
         window.location.href = "3DVersion.html";
     } catch (error) {
-        alert(error.message);
+        console.error('Error updating user data:', error);
+        alert('Failed to update user data. Please try again.');
     }
 });
 

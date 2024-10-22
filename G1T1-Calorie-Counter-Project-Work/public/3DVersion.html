@@ -761,16 +761,29 @@
           <input type="text" id="update-username" placeholder="Username" />
           <button type="button" id="check-username-btn">Check Username</button>
           <span id="username-status"></span>
-          <input type="date" id="update-birthdate" placeholder="Birthdate" />
-          <input type="number" id="update-height" placeholder="Height (cm)" />
-          <input type="number" id="update-weight" placeholder="Weight (kg)" />
-          <input type="text" id="update-lifestyle" placeholder="Lifestyle" />
+          <input type="date" id="birthdate" placeholder="Birthdate" />
+          <input type="number" id="height" placeholder="Height (cm)" />
+          <input type="number" id="weight" placeholder="Weight (kg)" />
+          <input type="text" id="lifestyle" placeholder="Lifestyle" />
           <input type="text" id="update-goals" placeholder="Goals" />
           <input type="time" id="update-breakfast-time" placeholder="Breakfast Time" />
           <input type="time" id="update-lunch-time" placeholder="Lunch Time" />
           <input type="time" id="update-dinner-time" placeholder="Dinner Time" />
+          <input type="text" id="sex" placeholder="sex"/>
+          <input type="hidden" id="currentAge" name="currentAge" />
+
+          <!--Nutrition API-->
+          <input type="hidden" id="carbohydrates" name="carbohydrates">
+          <input type="hidden" id="protein" name="protein">
+          <input type="hidden" id="fat" name="fat">
+          <input type="hidden" id="fiber" name="fiber">
+          <input type="hidden" id="bmi" name="bmi">
+          <input type="hidden" id="calorieNeeds" name="calorieNeeds">
           <button type="submit">Update</button>
-        </form>  
+        </form>
+        <script type="module" src="calculateAge.js"></script>  
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script type="module" src="NutritionAPI.js"></script>  
         <script type="module" src="AccountUpdate.js"></script>
       </div>
     </div>
