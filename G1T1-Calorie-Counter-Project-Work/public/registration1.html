@@ -90,7 +90,11 @@
         #goals {
             color:black;
         }
+        #sex {
+            color:black;
+        }
     </style>
+    
 </head>
 <body>
     <!-- Portal Animation Container -->
@@ -171,6 +175,9 @@
 
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        await fetchNutritionData();
+
         const email = document.getElementById('register-email').value;
         const password = document.getElementById('register-password').value;
         const username = document.getElementById('username').value;
@@ -182,6 +189,15 @@
         const breakfastTime = document.getElementById('breakfast-time').value;
         const lunchTime = document.getElementById('lunch-time').value;
         const dinnerTime = document.getElementById('dinner-time').value;
+        
+        //fields from NUtrition API
+        const sex = document.getElementById('sex').value;
+        const carbohydrates = document.getElementById('carbohydrates').value;
+        const protein = document.getElementById('protein').value;
+        const fat = document.getElementById('fat').value;
+        const fiber = document.getElementById('fiber').value;
+        const bmi = document.getElementById('bmi').value;
+        const calorieNeeds = document.getElementById('calorieNeeds').value;
 
         try {
             // Check if the username is unique
@@ -207,7 +223,14 @@
                     breakfast: breakfastTime,
                     lunch: lunchTime,
                     dinner: dinnerTime
-                }
+                },
+                sex,            // NutritionAPI fields
+                carbohydrates,  
+                protein,
+                fat,
+                fiber,
+                bmi,
+                calorieNeeds
             };
 
             // Save user data to Firestore
@@ -235,6 +258,7 @@
                 <button type="button" class="btn btn-secondary mt-2" id="check-username-btn">Check Username</button>
                 <div id="username-status" class="form-text mt-2"></div>
             </div>
+                        <!-- email -->
             <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
                     <input type="email" class="form-control" id="register-email" placeholder="Email" required>                    
@@ -253,6 +277,16 @@
                 <div id="passwordHelp" class="form-text text-danger"></div>
             </div>
 
+            <!-- Gender -->
+            <div class="mb-3">
+                <label for="sex" class="form-label">Gender</label>
+                <select class="form-select" id="sex" required>
+                    <option selected disabled>Select your Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </div>
+
             <!-- Birth Date -->
             <div class="mb-3">
                 <label for="birthdate" class="form-label">Birth Date</label>
@@ -263,6 +297,7 @@
             <div class="mb-3">
                 <label for="calculated-age" class="form-label">Your Age</label>
                 <div id="calculated-age" class="form-control"></div>
+                <input type="hidden" id="currentAge" name="currentAge" value="">
             </div>
 
             <!-- Height -->
@@ -318,6 +353,13 @@
                     </div>
                 </div>
             </div>
+            <!--I added these fields so NutritionAPI can populate it-->
+            <input type="hidden" id="carbohydrates" name="carbohydrates">
+            <input type="hidden" id="protein" name="protein">
+            <input type="hidden" id="fat" name="fat">
+            <input type="hidden" id="fiber" name="fiber">
+            <input type="hidden" id="bmi" name="bmi">
+            <input type="hidden" id="calorieNeeds" name="calorieNeeds">
 
             <!-- Submit Button -->
             <div class="d-grid gap-2">
@@ -333,6 +375,7 @@
     <script>
         const birthdateField = document.getElementById('birthdate');
         const calculatedAgeDiv = document.getElementById('calculated-age');
+        const currentAge=document.getElementById('currentAge');
 
         birthdateField.addEventListener('input', () => {
             const birthdate = new Date(birthdateField.value);
@@ -345,7 +388,10 @@
             }
 
             calculatedAgeDiv.textContent = `You are ${age} years old.`;
+            currentAge.value=age;
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="NutritionAPI.js"></script>
 </body>
 </html>

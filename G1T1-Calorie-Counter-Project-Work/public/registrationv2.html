@@ -168,6 +168,14 @@
             const lunchTime = document.getElementById('lunch-time').value;
             const dinnerTime = document.getElementById('dinner-time').value;
 
+            //fields from NUtrition API
+            const carbohydrates = document.getElementById('carbohydrates').value;
+            const protein = document.getElementById('protein').value;
+            const fat = document.getElementById('fat').value;
+            const fiber = document.getElementById('fiber').value;
+            const bmi = document.getElementById('bmi').value;
+            const calorieNeeds = document.getElementById('calorieNeeds').value;
+
             // Check if username is unique
             const usernameQuery = query(collection(db, "users"), where("username", "==", username));
             const querySnapshot = await getDocs(usernameQuery);
@@ -193,7 +201,14 @@
                             breakfast: breakfastTime,
                             lunch: lunchTime,
                             dinner: dinnerTime
-                        }
+                        },
+                        carbohydrates,  // NutritionAPI fields
+                        protein,
+                        fat,
+                        fiber,
+                        bmi,
+                        calorieNeeds
+
                     };
 
                     // Save user data to Firestore

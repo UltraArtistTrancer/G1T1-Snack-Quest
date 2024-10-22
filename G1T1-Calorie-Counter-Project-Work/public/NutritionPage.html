@@ -10,7 +10,7 @@
 
     <h2>User Information Form</h2>
     
-    <form id="userForm">
+    <form id="registrationForm">
         <!-- Sex -->
         <label for="sex">Sex:</label>
         <select id="sex" name="sex" required>
@@ -20,8 +20,8 @@
         <br><br>
 
         <!-- Age -->
-        <label for="age">Age (Years):</label>
-        <input type="number" id="age" name="age" min="0" required>
+        <label for="currentAge">Age (Years):</label>
+        <input type="number" id="currentAge" name="age" min="0" required>
         <br><br>
 
         <!-- Height -->
@@ -35,8 +35,8 @@
         <br><br>
 
         <!-- Activity Level -->
-        <label for="activity">Activity Level:</label>
-        <select id="activity" name="activity" required>
+        <label for="lifestyle">Activity Level:</label>
+        <select id="lifestyle" name="lifestyle" required>
             <option value="Inactive">Inactive</option>
             <option value="Low Active">Low Active</option>
             <option value="Active">Active</option>
@@ -49,10 +49,15 @@
     </form>
 
     <!-- Results Div -->
-    <div id="result"></div>
+    <input type="text" id="carbohydrates" name="carbohydrates">
+    <input type="text" id="protein" name="protein">
+    <input type="text" id="fat" name="fat">
+    <input type="text" id="fiber" name="fiber">
+    <input type="text" id="bmi" name="bmi">
+    <input type="text" id="calorieNeeds" name="calorieNeeds">
 
     <!-- Link to external JavaScript file -->
-    <script src="NutritionAPI.js"></script>
+    <script src="NutritionAPI_test.js"></script>
 
 </body>
 </html>
