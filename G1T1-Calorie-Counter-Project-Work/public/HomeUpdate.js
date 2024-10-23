@@ -1,27 +1,27 @@
-// app.js
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
-import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+    import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+    import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-functions.js";
+    import { fetchNutritionData } from './NutritionAPI.js';
 
-// Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyBAhYdiPIDo0OtV-RoIiRVQCxvgofMb0js",
-    authDomain: "snack-quest.firebaseapp.com",
-    databaseURL: "https://snack-quest-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "snack-quest",
-    storageBucket: "snack-quest.appspot.com",
-    messagingSenderId: "974726219698",
-    appId: "1:974726219698:web:361c5bf4bf98a8798c86ab",
-    measurementId: "G-YXRNC4ZPTZ"
-};
+    // Fill in with your own web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBAhYdiPIDo0OtV-RoIiRVQCxvgofMb0js",
+        authDomain: "snack-quest.firebaseapp.com",
+        databaseURL: "https://snack-quest-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "snack-quest",
+        storageBucket: "snack-quest.appspot.com",
+        messagingSenderId: "974726219698",
+        appId: "1:974726219698:web:361c5bf4bf98a8798c86ab",
+        measurementId: "G-YXRNC4ZPTZ"
+    };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);  // Make sure Firestore is initialized
 
-// Your existing fetch and update logic goes here
+    // Function to fetch user data
 async function fetchUserData(userId) {
     const docRef = doc(db, "users", userId);
     const docSnap = await getDoc(docRef);
@@ -33,46 +33,37 @@ async function fetchUserData(userId) {
     }
 }
 
-async function populateUpdateForm(userId) {
-    const userData = await fetchUserData(userId);
-    if (userData) {
-        document.getElementById('home-username').textContent = userData.username;
-        const birthdate = userData.birthdate; // Assuming the birthdate is stored as a string 'YYYY-MM-DD'
-        const age = calculateAge(birthdate);
+    const registerForm = document.getElementById('foodForm');
 
-        // Update the display for birthdate and age
-        document.getElementById('home-birthdate').textContent = `Birthdate: ${birthdate} (Age: ${age})`;
-        // document.getElementById('home-birthdate').textContent = userData.birthdate;
-        document.getElementById('home-height').textContent = userData.height;
-        document.getElementById('home-weight').textContent = userData.weight;
-        document.getElementById('home-lifestyle').textContent = userData.lifestyle;
-        document.getElementById('home-goals').textContent = userData.goals;
-        document.getElementById('home-breakfast-time').textContent = userData.mealTimes.breakfast;
-        document.getElementById('home-lunch-time').textContent = userData.mealTimes.lunch;
-        document.getElementById('home-dinner-time').textContent = userData.mealTimes.dinner;
-    }
-}
+    registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-// Call this function when the page loads to populate the form
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        const userId = user.uid;
-        populateUpdateForm(userId);
-    } else {
-        console.log("No user is signed in.");
-    }
-});
+        const foodInput2 = document.getElementById('foodInput').value;
+        const mealType = document.getElementById('mealType').value;
 
-function calculateAge(birthdate) {
-    const today = new Date();
-    const birthDate = new Date(birthdate);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    
-    // Adjust age if the birthday hasn't occurred yet this year
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-    }
+        try {
+            const userId = auth.currentUser.uid; // Get current user ID
 
-    return age;
-}
+            // Prepare user data for Firestore
+            const userData = {
+                mealLogs: {
+                    [new Date().toISOString().split('T')[0]]: { // Store by current date
+                        foodInput: foodInput2,
+                        mealType: mealType
+                    }
+                }
+            };
+
+            // Save user data to Firestore
+            //To modify your existing code so that it adds data to the existing user document 
+            //instead of replacing the entire document in Firestore, you need to use the updateDoc function instead of setDoc. 
+            //The setDoc function replaces the document, while updateDoc only updates the specific fields you provide, 
+            //leaving the other fields intact.
+            await updateDoc(doc(db, "users", userId), userData);
+            alert('Food submission successful .');
+            window.location.href = "3DVersion.html";
+        } catch (error) {
+            console.error("Error during registration:", error);
+            alert(error.message);
+        }
+    });

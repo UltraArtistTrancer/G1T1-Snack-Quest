@@ -673,25 +673,27 @@
         <div class="popup-content">
           <span id="closePopup" class="close">&times;</span>
           <h3>What have you just eaten?</h3>
-          <input type="text" id="foodInput" placeholder="What have you just eaten?">
+          <script type="module" src="HomeUpdate.js"></script>
+        <form id="foodForm">
+                      <!-- foodInput -->
+                      <label for="mealType">Choose Meal Type:</label>
+                      <select id="mealType" name="mealType">
+                          <option value="breakfast">Breakfast</option>
+                          <option value="lunch">Lunch</option>
+                          <option value="dinner">Dinner</option>
+                      </select>
+          <div class="mb-3">
+                  <label for="foodInput" class="form-label">foodInput</label>
+                  <input type="text" class="form-control" id="foodInput" placeholder="foodInput" required>                    
+          </div>
+          
+          <!-- Submit Button -->
+          <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary" id="submitBtn">Submit</button>
+          </div>
+      </form>
         </div>
-      </div>
-
-      <h2>Account</h2>
-        <!-- Content for the account page -->
-        <div id="userInfo">
-          <h3>Current User Information</h3>
-          <p hidden><strong>Username:</strong> <span id="home-username"></span></p>
-          <p><strong>Birthdate:</strong> <span id="home-birthdate"></span></p>
-          <p><strong>Height:</strong> <span id="home-height"></span> cm</p>
-          <p><strong>Weight:</strong> <span id="home-weight"></span> kg</p>
-          <p><strong>Lifestyle:</strong> <span id="home-lifestyle"></span></p>
-          <p hidden><strong>Goals:</strong> <span id="home-goals"></span></p>
-          <p hidden><strong>Breakfast Time:</strong> <span id="home-breakfast-time"></span></p>
-          <p hidden><strong>Lunch Time:</strong> <span id="home-lunch-time"></span></p>
-          <p hidden><strong>Dinner Time:</strong> <span id="home-dinner-time"></span></p>
-        </div>
-        <script type="module" src="HomeUpdate.js"></script>
+      </div>        
     </div>
 
     <!-- Leaderboard Page -->
