@@ -101,7 +101,7 @@
     <div id="portalContainer"></div>
 
     <!-- Dynamic Stars -->
-    <script>
+    <!--<script>
         const numStars = 100;
         for (let i = 0; i < numStars; i++) {
             const star = document.createElement('div');
@@ -117,7 +117,7 @@
             star.style.setProperty('--newY', Math.random());
             document.body.appendChild(star);
         }
-    </script>
+    </script>-->
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
@@ -142,7 +142,7 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);  // Make sure Firestore is initialized
-    const functions = getFunctions(app);
+    const functions = getFunctions(app, "asia-southeast1");
 
     const registerForm = document.getElementById('registrationForm'); 
 
@@ -151,7 +151,9 @@
     // Function to check if the username is taken
     async function isUsernameUnique(username) {
         try {
+            console.log(username);
             const result = await checkUsernameFunction({ username });
+            console.log(result)
             return result.data.available; // Returns true if available, false otherwise
         } catch (error) {
             console.error("Error checking username:", error);

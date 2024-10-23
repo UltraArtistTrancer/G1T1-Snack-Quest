@@ -66,7 +66,7 @@ async function getFirstSentence(pageTitle) {
 */
 
 // index.js in your 'functions' directory
-const functions = require("firebase-functions");
+/*const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 admin.initializeApp();
 
@@ -86,4 +86,90 @@ exports.checkUsername = functions.https.onCall(async (data, context) => {
     } else {
         return { available: false };
     }
+});*/
+
+/*const functions = require("firebase-functions/v2");
+const admin = require("firebase-admin");
+const cors = require("cors")({ origin: true }); // Import and configure CORS
+
+admin.initializeApp();
+
+const db = admin.firestore();
+
+// Gen 2 Cloud Function for checking if a username exists with CORS enabled
+exports.checkUsername = functions.https.onRequest(async (req, res) => {
+  cors(req, res, async () => {
+    try {
+      // Check for HTTP method
+      if (req.method !== "POST") {
+        return res.status(405).send("Only POST requests are allowed");
+      }
+
+      const { username } = req.body;
+
+      if (!username) {
+        return res.status(400).send("Username is required");
+      }
+
+      // Query Firestore for the username
+      const userQuery = await db.collection("users")
+        .where("username", "==", username)
+        .get();
+
+      if (!userQuery.empty) {
+        // Username exists
+        return res.status(200).json({ available: false });
+      } else {
+        // Username does not exist
+        return res.status(200).json({ available: true });
+      }
+    } catch (error) {
+      console.error("Error checking username:", error);
+      return res.status(500).send("Internal Server Error");
+    }
+  });
+});*/
+
+const { onRequest } = require("firebase-functions/v2/https");
+const { initializeApp } = require("firebase-admin/app");
+const { getFirestore } = require("firebase-admin/firestore");
+const cors = require("cors")({ origin: true });
+
+initializeApp();
+const db = getFirestore();
+
+// Gen 2 Cloud Function with region specified
+exports.checkUsername = onRequest({ region: "asia-southeast1" }, (req, res) => {
+  cors(req, res, async () => {
+    if (req.method === "OPTIONS") {
+      res.set("Access-Control-Allow-Methods", "POST");
+      res.set("Access-Control-Allow-Headers", "Content-Type");
+      res.set("Access-Control-Allow-Origin", "https://snack-quest.web.app");
+      return res.status(204).send("");
+    }
+
+    try {
+      if (req.method !== "POST") {
+        return res.status(405).send("Only POST requests are allowed");
+      }
+
+      const { username } = req.body;
+
+      if (!username) {
+        return res.status(400).send("Username is required");
+      }
+
+      const userQuery = await db.collection("users")
+        .where("username", "==", username)
+        .get();
+
+      const available = userQuery.empty;
+      res.set("Access-Control-Allow-Origin", "https://snack-quest.web.app");
+      return res.status(200).json({ available });
+    } catch (error) {
+      console.error("Error checking username:", error);
+      res.set("Access-Control-Allow-Origin", "https://snack-quest.web.app");
+      return res.status(500).send("Internal Server Error");
+    }
+  });
 });
