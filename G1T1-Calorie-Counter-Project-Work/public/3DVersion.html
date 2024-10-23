@@ -670,28 +670,93 @@
 
       <!-- Pop-up Textbox -->
       <div id="nutritionPopup" class="popup">
+        <form>
         <div class="popup-content">
           <span id="closePopup" class="close">&times;</span>
           <h3>What have you just eaten?</h3>
           <input type="text" id="foodInput" placeholder="What have you just eaten?">
-        </div>
-      </div>
+          <select class="form-select" id="mealType" required>
+              <option selected disabled>Which meal is it</option>
+              <option value="breakfast">Breakfast</option>
+              <option value="lunch">Lunch</option>
+              <option value="dinner">Dinner</option>
+          </select>
+          <!-- Sex -->
+        <label for="sex">Sex:</label>
+        <select id="food-sex" name="sex" required>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+        <br><br>
 
-      <h2>Account</h2>
-        <!-- Content for the account page -->
-        <div id="userInfo">
-          <h3>Current User Information</h3>
-          <p hidden><strong>Username:</strong> <span id="home-username"></span></p>
-          <p><strong>Birthdate:</strong> <span id="home-birthdate"></span></p>
-          <p><strong>Height:</strong> <span id="home-height"></span> cm</p>
-          <p><strong>Weight:</strong> <span id="home-weight"></span> kg</p>
-          <p><strong>Lifestyle:</strong> <span id="home-lifestyle"></span></p>
-          <p hidden><strong>Goals:</strong> <span id="home-goals"></span></p>
-          <p hidden><strong>Breakfast Time:</strong> <span id="home-breakfast-time"></span></p>
-          <p hidden><strong>Lunch Time:</strong> <span id="home-lunch-time"></span></p>
-          <p hidden><strong>Dinner Time:</strong> <span id="home-dinner-time"></span></p>
+        <!-- Age -->
+        <label for="food-age">Age (Years):</label>
+        <input type="number" id="food-age" name="age" min="0" required>
+        <br><br>
+
+        <!-- Height -->
+        <label for="food-height">Height (cm):</label>
+        <input type="number" id="food-height" name="height" min="0" required>
+        <br><br>
+
+        <!-- Weight -->
+        <label for="food-weight">Weight (kg):</label>
+        <input type="number" id="food-weight" name="weight" min="0" required>
+        <br><br>
+
+        <!-- Activity Level -->
+        <label for="food-lifestyle">Activity Level:</label>
+        <select id="food-lifestyle" name="lifestyle" required>
+            <option value="Inactive">Inactive</option>
+            <option value="Low Active">Low Active</option>
+            <option value="Active">Active</option>
+            <option value="Very Active">Very Active</option>
+        </select>
+        <br><br>
+          <!-- Submit Button -->
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary" id="submitFoodBtn">Submit</button>
+          </div>
         </div>
-        <script type="module" src="HomeUpdate.js"></script>
+        </form>
+        <h3>Current User Information</h3>
+          <p><strong>Username:</strong> <span id="home2-username"></span></p>
+          <p><strong>Birthdate:</strong> <span id="home2-birthdate"></span></p>
+          <p><strong>Height:</strong> <span id="home2-height"></span> cm</p>
+          <p><strong>Weight:</strong> <span id="home2-weight"></span> kg</p>
+          <p><strong>Lifestyle:</strong> <span id="home2-lifestyle"></span></p>
+          <p><strong>Goals:</strong> <span id="home2-goals"></span></p>
+          <p><strong>Breakfast Time:</strong> <span id="home2-breakfast-time"></span></p>
+          <p><strong>Lunch Time:</strong> <span id="home2-lunch-time"></span></p>
+          <p><strong>Dinner Time:</strong> <span id="home2-dinner-time"></span></p>
+        </div>
+        <h3>Update User Information</h3>
+        <form id="updateForm">
+          <input type="text" id="home2-username" placeholder="Username" />
+          <button type="button" id="check-username-btn">Check Username</button>
+          <span id="username-status"></span>
+          <input type="date" id="home2-birthdate" placeholder="Birthdate" />
+          <input type="number" id="home2-height" placeholder="Height (cm)" />
+          <input type="number" id="home2-weight" placeholder="Weight (kg)" />
+          <input type="text" id="home2-lifestyle" placeholder="Lifestyle" />
+          <input type="text" id="home2-goals" placeholder="Goals" />
+          <input type="time" id="home2--breakfast-time" placeholder="Breakfast Time" />
+          <input type="time" id="home2--lunch-time" placeholder="Lunch Time" />
+          <input type="time" id="home2--dinner-time" placeholder="Dinner Time" />
+          <input type="text" id="home2-sex" placeholder="sex"/>
+          <input type="hidden" id="home2-age" name="currentAge" />
+
+          <!--Nutrition API-->
+          <input type="hidden" id="home2-carbohydrates" name="carbohydrates">
+          <input type="hidden" id="home2-protein" name="protein">
+          <input type="hidden" id="home2-fat" name="fat">
+          <input type="hidden" id="home2-fiber" name="fiber">
+          <input type="hidden" id="home2-bmi" name="bmi">
+          <input type="hidden" id="home2-calorieNeeds" name="calorieNeeds">
+          <button type="submit">Update</button>
+        </form>
+      </div>
+      <script type="module" src="HomeUpdate.js"></script>
     </div>
 
     <!-- Leaderboard Page -->
