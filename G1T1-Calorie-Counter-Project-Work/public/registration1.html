@@ -124,6 +124,7 @@
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
     import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
     import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-functions.js";
+    import { fetchNutritionData } from './NutritionAPI.js';
 
     // Fill in with your own web app's Firebase configuration
     const firebaseConfig = {
@@ -392,6 +393,5 @@
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="NutritionAPI.js"></script>
 </body>
 </html>
