@@ -141,6 +141,10 @@ const db = getFirestore();
 // Gen 2 Cloud Function with region specified
 exports.checkUsername = onRequest({ region: "asia-southeast1" }, (req, res) => {
   cors(req, res, async () => {
+    console.log("req.met:::"+req.method)
+    console.log("req.bod:::"+req.body)
+    console.log("Request body:", JSON.stringify(req.body, null, 2));
+    console.log("res:::"+res)
     if (req.method === "OPTIONS") {
       res.set("Access-Control-Allow-Methods", "POST");
       res.set("Access-Control-Allow-Headers", "Content-Type");
@@ -153,7 +157,8 @@ exports.checkUsername = onRequest({ region: "asia-southeast1" }, (req, res) => {
         return res.status(405).send("Only POST requests are allowed");
       }
 
-      const { username } = req.body;
+      const { username } = req.body.data;
+      console.log("Checking username:", username);
 
       if (!username) {
         return res.status(400).send("Username is required");
@@ -163,9 +168,12 @@ exports.checkUsername = onRequest({ region: "asia-southeast1" }, (req, res) => {
         .where("username", "==", username)
         .get();
 
+        console.log("User Query Snapshot:", userQuery);
+        console.log("Number of documents found:", userQuery.size);
+
       const available = userQuery.empty;
       res.set("Access-Control-Allow-Origin", "https://snack-quest.web.app");
-      return res.status(200).json({ available });
+      return res.status(200).json({ data: { available }});
     } catch (error) {
       console.error("Error checking username:", error);
       res.set("Access-Control-Allow-Origin", "https://snack-quest.web.app");
