@@ -68,62 +68,6 @@
       cursor: url('carrot-cursor.png'), auto; /* Replace with your carrot cursor image path */
     }
 
-    @keyframes gradientAnimation {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* Dynamic Stars */
-    .star {
-      position: absolute;
-      background-color: #fff;
-      border-radius: 50%;
-      box-shadow: 0 0 10px rgba(255,255,255,0.8);
-      animation: starAnimation linear infinite;
-    }
-
-    @keyframes starAnimation {
-      0% {
-        opacity: 1;
-        transform: scale(1);
-      }
-      70% {
-        opacity: 0.5;
-        transform: scale(0.5);
-      }
-      100% {
-        opacity: 0;
-        transform: scale(0);
-        top: calc(100% * var(--newY));
-        left: calc(100% * var(--newX));
-      }
-    }
-
-    /* Portal Animation */
-    .portal {
-      position: fixed;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,255,255,1), rgba(255,255,255,0));
-      animation: portalAnimation 0.5s forwards;
-      pointer-events: none;
-      z-index: 1000;
-      transform: translate(-50%, -50%);
-    }
-
-    @keyframes portalAnimation {
-      0% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 1;
-      }
-      100% {
-        transform: translate(-50%, -50%) scale(5);
-        opacity: 0;
-      }
-    }
-
     /* Navigation Bar Styles */
     .navbar {
       background: rgba(43, 29, 90, 0.9);
@@ -557,29 +501,6 @@
 
     <div><button id="logout-button" class="btn btn-danger px-5" href>Logout</button></div>
 
-  <!-- Portal Animation Container -->
-  <div id="portalContainer"></div>
-
-  <!-- Generate Dynamic Stars -->
-  <script>
-    const numStars = 100;
-    for (let i = 0; i < numStars; i++) {
-      const star = document.createElement('div');
-      star.className = 'star';
-      const size = Math.random() * 3 + 1; // Sizes between 1px and 4px
-      star.style.width = `${size}px`;
-      star.style.height = `${size}px`;
-      star.style.left = Math.random() * 100 + '%';
-      star.style.top = Math.random() * 100 + '%';
-      star.style.animationDuration = `${Math.random() * 5 + 2}s`; // Durations between 2s and 7s
-      star.style.animationDelay = `${Math.random() * 5}s`;
-      // Random new position after animation
-      star.style.setProperty('--newX', Math.random());
-      star.style.setProperty('--newY', Math.random());
-      document.body.appendChild(star);
-    }
-  </script>
-
   <!-- Angle Bracket Buttons -->
   <button class="angle-button left">&lt;</button>
   <button class="angle-button right">&gt;</button>
@@ -673,15 +594,8 @@
         <div class="popup-content">
           <span id="closePopup" class="close">&times;</span>
           <h3>What have you just eaten?</h3>
-          <script type="module" src="HomeUpdate.js"></script>
-        <form id="foodForm">
-                      <!-- foodInput -->
-                      <label for="mealType">Choose Meal Type:</label>
-                      <select id="mealType" name="mealType">
-                          <option value="breakfast">Breakfast</option>
-                          <option value="lunch">Lunch</option>
-                          <option value="dinner">Dinner</option>
-                      </select>
+          <script type="module" src="HomeUpdate2.js"></script>
+        <form id="foodInputForm">
           <div class="mb-3">
                   <label for="foodInput" class="form-label">foodInput</label>
                   <input type="text" class="form-control" id="foodInput" placeholder="foodInput" required>                    
@@ -875,19 +789,6 @@
     });
     document.getElementById('fatsContainer').addEventListener('click', function() {
       this.classList.toggle('clicked');
-    });
-
-    // Cursor Portal Animation
-    document.addEventListener('click', function(e) {
-      const portal = document.createElement('div');
-      portal.className = 'portal';
-      portal.style.left = e.clientX + 'px';
-      portal.style.top = e.clientY + 'px';
-      document.getElementById('portalContainer').appendChild(portal);
-
-      setTimeout(() => {
-        portal.remove();
-      }, 500);
     });
 
     // Navigation Functionality

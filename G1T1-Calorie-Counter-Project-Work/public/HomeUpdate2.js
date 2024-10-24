@@ -33,7 +33,7 @@ async function fetchUserData(userId) {
     }
 }
 
-    const registerForm = document.getElementById('foodForm');
+    const registerForm = document.getElementById('foodInputForm');
 
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
