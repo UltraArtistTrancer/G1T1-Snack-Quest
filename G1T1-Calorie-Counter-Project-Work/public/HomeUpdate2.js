@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
-    import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+    import { getFirestore, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
     import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-functions.js";
     import { fetchNutritionData } from './NutritionAPI.js';
 
@@ -38,18 +38,18 @@ async function fetchUserData(userId) {
     registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const foodInput = document.getElementById('foodInput').value;
+        let foodInput = new Date().toISOString().split('T')[0] + '|' + document.getElementById('foodInput').value;
 
         try {
             const userId = auth.currentUser.uid; // Get current user ID
+            const firestoreData = await fetchUserData(userId);
+            if (firestoreData) {
+                foodInput = firestoreData.foodInput + '|' + foodInput;
+            }
 
             // Prepare user data for Firestore
             const userData = {
-                mealLogs: {
-                    [new Date().toISOString().split('T')[0]]: { // Store by current date
-                        foodInput: foodInput,
-                    }
-                }
+                foodInput: foodInput
             };
 
             // Save user data to Firestore

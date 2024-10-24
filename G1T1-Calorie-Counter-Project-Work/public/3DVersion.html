@@ -475,6 +475,49 @@
       font-size: 24px;
       cursor: pointer;
     }
+
+    /* General table styling */
+table {
+    border-collapse: collapse; /* Ensures that borders between cells collapse into single lines */
+    width: 100%; /* Adjust the width as needed */
+    margin: 20px 0; /* Optional: Adds margin around the table */
+    font-family: Arial, sans-serif; /* Optional: Font family for the table */
+    color: black; /* Ensures that the font color is black */
+}
+
+/* Table header (thead) styling */
+thead th {
+    border: 1px solid black; /* Adds border to each header cell */
+    background-color: #f2f2f2; /* Optional: Light background color for header */
+    padding: 10px; /* Adds padding inside the header cells */
+    text-align: left; /* Aligns text to the left */
+    color: black; /* Black font color for the header */
+}
+
+/* Table body (tbody) styling */
+tbody td {
+    border: 1px solid black; /* Adds border to each body cell */
+    padding: 8px; /* Adds padding inside the body cells */
+    text-align: left; /* Aligns text to the left */
+    color: black; /* Ensures the font color is black */
+}
+
+/* Table row styling */
+tr {
+    background-color: #fff; /* Default background color */
+    color: black; /* Ensures the text color is black for all rows */
+}
+
+/* Optional: Zebra stripes for table rows */
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Lighter background for even rows */
+}
+
+/* Optional: Hover effect on rows */
+tbody tr:hover {
+    background-color: #ddd; /* Changes background color on hover */
+}
+
   </style>
   <script>
     // DO NOT MODIFY THIS ARRAY
@@ -597,8 +640,8 @@
           <script type="module" src="HomeUpdate2.js"></script>
         <form id="foodInputForm">
           <div class="mb-3">
-                  <label for="foodInput" class="form-label">foodInput</label>
-                  <input type="text" class="form-control" id="foodInput" placeholder="foodInput" required>                    
+            <label for="foodInput" class="form-label">foodInput</label>
+            <input type="text" class="form-control" id="foodInput" placeholder="foodInput" required>                    
           </div>
           
           <!-- Submit Button -->
@@ -652,6 +695,27 @@
       <div class="history-page">
         <h2>History</h2>
         <!-- Content for the history page -->
+        <!-- <p id="foodHistory"></p> -->
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <table>
+          <thead>
+              
+              <!-- When to Prefer <thead>:
+  1)  Larger, complex tables where clarity of sections matters.
+  2)  Tables requiring styling or JavaScript interactions.
+  3)  For accessibility and semantic correctness in web standards. -->
+  
+  <!-- I want to add 1 more functionality:
+   to hide the thead until user has clicked sampleBtn -->
+              <tr>
+                <th>Date</th>  
+                <th>Food</th>
+              </tr>
+          </thead>
+          <tbody id="foodHistory">
+          </tbody>
+      </table>
+        <script type="module" src="HistoryUpdate.js"></script>
       </div>
     </div>
 
