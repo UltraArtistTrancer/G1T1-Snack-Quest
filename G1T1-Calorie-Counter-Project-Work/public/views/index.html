@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Page container styling */
+    .page-container {
+      padding: 10px;
+    }
+
+    /* Chart row grid layout */
+    .chart-row {
+      padding-top: 90px;
+      display: grid;
+      top: 120px;
+      gap: 25px
+    }
+
+    /* Chart container with fixed height */
+    .chart-container {
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      position: relative;
+      height: 250px; /* Fixed height for the container */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-top: 100px;
+    }
+
+    /* Responsive grid configurations */
+    @media (min-width: 1200px) {
+      .chart-row {
+        grid-template-columns: repeat(4, 1fr); /* 4 columns on large screens */
+      }
+    }
+    
+    @media (min-width: 768px) and (max-width: 1199px) {
+      .chart-row {
+        grid-template-columns: repeat(2, 1fr); /* 2x2 grid on medium screens */
+      }
+    }
+
+    @media (max-width: 767px) {
+      .chart-row {
+        grid-template-columns: 1fr; /* Single column on small screens */
+      }
+    }
+
+    /* Chart icon styling */
+    .icon {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+    
+    .info-card {
+      margin-top: 10px;
+    }
+
+    .page h2{
+        text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Snack Quest</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Leaderboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Food Nearby</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">History</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Account</a></li>
+        </ul>
+      </div>
+      <button class="btn btn-danger ms-3" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <!-- Chart Section -->
+  <div class="page-container">
+    <div class="page">
+      <h2>Current Progress</h2>
+      <div class="chart-row">
+        <!-- Chart Containers -->
+         <!--Numbers need to be updated from database-->
+        <div class="chart-container" id="caloriesContainer">
+          <canvas id="caloriesChart"></canvas>
+          <div class="icon">Calories ⚡</div>
+          <div class="info-card">
+            <p><strong>Total Calories needed today:</strong> 2,500 kcal</p>
+            <p><strong>Calories Consumed today:</strong> 1,800 kcal</p>
+          </div>
+        </div>
+        <div class="chart-container" id="carbsContainer">
+          <canvas id="carbsChart"></canvas>
+          <div class="icon">Carbohydrates 🥖</div>
+          <div class="info-card">
+            <p><strong>Total Carbohydrates needed today:</strong> 300 grams</p>
+            <p><strong>Carbohydrates Consumed today:</strong> 125 grams</p>
+          </div>
+        </div>
+        <div class="chart-container" id="proteinContainer">
+          <canvas id="proteinChart"></canvas>
+          <div class="icon">Protein 🍖</div>
+          <div class="info-card">
+            <p><strong>Total Protein needed today:</strong> 50 grams</p>
+            <p><strong>Protein Consumed today:</strong> 35 grams</p>
+          </div>
+        </div>
+        <div class="chart-container" id="fatsContainer">
+          <canvas id="fatsChart"></canvas>
+          <div class="icon">Fats 🧈</div>
+          <div class="info-card">
+            <p><strong>Total Fats needed today:</strong> 70 grams</p>
+            <p><strong>Fats Consumed today:</strong> 55 grams</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- JavaScript for Logout -->
+  <script>
+    function logout() {
+      alert("You have been logged out!");
+      window.location.href = "/login.html";
+    }
+  </script>
+
+  <!-- Chart.js Configuration -->
+  <script>
+    function createDonutChart(ctx, data, backgroundColors) {
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Consumed', 'Remaining'],
+          datasets: [{
+            data: data,
+            backgroundColor: backgroundColors
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      createDonutChart(document.getElementById('caloriesChart').getContext('2d'), [1800, 700], ['#FF6384', '#CCCCCC']);
+      createDonutChart(document.getElementById('carbsChart').getContext('2d'), [125, 175], ['#36A2EB', '#CCCCCC']);
+      createDonutChart(document.getElementById('proteinChart').getContext('2d'), [35, 15], ['#FFCE56', '#CCCCCC']);
+      createDonutChart(document.getElementById('fatsChart').getContext('2d'), [55, 15], ['#4BC0C0', '#CCCCCC']);
+    });
+  </script>
+</body>
+</html>
