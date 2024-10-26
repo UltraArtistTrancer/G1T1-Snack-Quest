@@ -134,7 +134,7 @@ updateForm.addEventListener('submit', async (e) => {
 
         await updateDoc(doc(db, "users", userId), updatedData);
         alert('User data updated successfully!');
-        window.location.href = "3DVersion.html";
+        window.location.href = "views/index.html";
     } catch (error) {
         console.error('Error updating user data:', error);
         alert('Failed to update user data. Please try again.');
