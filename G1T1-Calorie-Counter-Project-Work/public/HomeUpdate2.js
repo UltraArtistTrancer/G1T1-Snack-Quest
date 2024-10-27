@@ -59,7 +59,7 @@ async function fetchUserData(userId) {
             //leaving the other fields intact.
             await updateDoc(doc(db, "users", userId), userData);
             alert('Food submission successful .');
-            window.location.href = "3DVersion.html";
+            window.location.href = "index.html";
         } catch (error) {
             console.error("Error during registration:", error);
             alert(error.message);

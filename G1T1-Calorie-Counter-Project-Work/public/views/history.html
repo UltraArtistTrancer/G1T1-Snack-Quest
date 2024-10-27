@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        p {
+            color: #555;
+        }
+
+        .nutrition {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Snack Quest</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="index.html">🌟 Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="leaderboard.html">🏆 Leaderboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="foodnearby.html">🍽️ Food Nearby</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#">📜 History</a></li>
+                    <li class="nav-item"><a class="nav-link" href="account.html">👤 Account</a></li>
+                </ul>
+            </div>
+            <button class="btn btn-danger ms-3" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 class="text-center mt-4">History</h2>
+
+        <!-- Meal Data Card -->
+        <div class="card" id="meal-card">
+            <h2 id="meal-time"></h2>
+            <p><strong>Food Name:</strong> <span id="food-name"></span></p>
+            <p><strong>Ingredients:</strong> <span id="ingredients"></span></p>
+
+            <div class="nutrition">
+                <p>Calories: <span id="calories"></span> kcal</p>
+                <p>Carbohydrates: <span id="carbohydrates"></span> g</p>
+                <p>Protein: <span id="protein"></span> g</p>
+                <p>Fats: <span id="fats"></span> g</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Retrieve the meal data from localStorage
+        let mealData = JSON.parse(localStorage.getItem('mealData'));
+
+        // Display the meal data in the card or update navbar if no data is available
+        if (mealData) {
+            document.getElementById('meal-time').innerText = mealData.mealTime;
+            document.getElementById('food-name').innerText = mealData.title;
+            document.getElementById('ingredients').innerText = mealData.ingredients;
+            document.getElementById('calories').innerText = mealData.calories;
+            document.getElementById('carbohydrates').innerText = mealData.carbohydrates;
+            document.getElementById('protein').innerText = mealData.protein;
+            document.getElementById('fats').innerText = mealData.fats;
+        } else {
+            document.querySelector('.navbar .container-fluid').innerHTML += 
+            document.getElementById('meal-card').style.display = 'none'; // Hide the meal card
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/scripts/logout.js"></script>
+
+</body>
+
+</html>

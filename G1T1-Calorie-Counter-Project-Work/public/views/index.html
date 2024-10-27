@@ -1,159 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    /* Page container styling */
+    /* Add your custom styles here */
     .page-container {
       padding: 10px;
     }
 
-    /* Chart row grid layout */
-    .chart-row {
-      padding-top: 90px;
-      display: grid;
-      top: 120px;
-      gap: 25px
-    }
-
-    /* Chart container with fixed height */
     .chart-container {
       padding: 20px;
       border-radius: 10px;
       text-align: center;
-      position: relative;
-      height: 250px; /* Fixed height for the container */
+      height: 250px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      border-top: 100px;
     }
 
-    /* Responsive grid configurations */
-    @media (min-width: 1200px) {
-      .chart-row {
-        grid-template-columns: repeat(4, 1fr); /* 4 columns on large screens */
-      }
-    }
-    
-    @media (min-width: 768px) and (max-width: 1199px) {
-      .chart-row {
-        grid-template-columns: repeat(2, 1fr); /* 2x2 grid on medium screens */
-      }
-    }
-
-    @media (max-width: 767px) {
-      .chart-row {
-        grid-template-columns: 1fr; /* Single column on small screens */
-      }
-    }
-
-    /* Chart icon styling */
     .icon {
       font-size: 30px;
       margin-bottom: 10px;
     }
-    
-    .info-card {
-      margin-top: 10px;
-    }
-
-    .page h2{
-        text-align: center;
-    }
   </style>
 </head>
-<body>
 
-  <!-- Navbar -->
+<body id="app">
+
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">Snack Quest</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
         <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Leaderboard</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Food Nearby</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">History</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Account</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">🌟 Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="leaderboard.html">🏆 Leaderboard</a></li>
+          <li class="nav-item"><a class="nav-link active" href="foodnearby.html">🍽️ Food Nearby</a></li>
+          <li class="nav-item"><a class="nav-link active" href="history.html">📜 History</a></li>
+          <li class="nav-item"><a class="nav-link" href="account.html">👤 Account</a></li>
         </ul>
       </div>
       <button class="btn btn-danger ms-3" onclick="logout()">Logout</button>
     </div>
   </nav>
 
-  <!-- Chart Section -->
   <div class="page-container">
     <div class="page">
-      <h2>Current Progress</h2>
-      <div class="chart-row">
-        <!-- Chart Containers -->
-         <!--Numbers need to be updated from database-->
-        <div class="chart-container" id="caloriesContainer">
-          <canvas id="caloriesChart"></canvas>
-          <div class="icon">Calories ⚡</div>
-          <div class="info-card">
-            <p><strong>Total Calories needed today:</strong> 2,500 kcal</p>
-            <p><strong>Calories Consumed today:</strong> 1,800 kcal</p>
+      <h2 class="text-center">Current Progress</h2>
+      <div class="row">
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="chart-container" id="caloriesContainer">
+            <canvas id="caloriesChart"></canvas>
+            <div class="icon">Calories ⚡</div>
+            <div class="info-card"></div>
           </div>
         </div>
-        <div class="chart-container" id="carbsContainer">
-          <canvas id="carbsChart"></canvas>
-          <div class="icon">Carbohydrates 🥖</div>
-          <div class="info-card">
-            <p><strong>Total Carbohydrates needed today:</strong> 300 grams</p>
-            <p><strong>Carbohydrates Consumed today:</strong> 125 grams</p>
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="chart-container" id="carbsContainer">
+            <canvas id="carbsChart"></canvas>
+            <div class="icon">Carbohydrates 🥖</div>
+            <div class="info-card"></div>
           </div>
         </div>
-        <div class="chart-container" id="proteinContainer">
-          <canvas id="proteinChart"></canvas>
-          <div class="icon">Protein 🍖</div>
-          <div class="info-card">
-            <p><strong>Total Protein needed today:</strong> 50 grams</p>
-            <p><strong>Protein Consumed today:</strong> 35 grams</p>
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="chart-container" id="proteinContainer">
+            <canvas id="proteinChart"></canvas>
+            <div class="icon">Protein 🍖</div>
+            <div class="info-card"></div>
           </div>
         </div>
-        <div class="chart-container" id="fatsContainer">
-          <canvas id="fatsChart"></canvas>
-          <div class="icon">Fats 🧈</div>
-          <div class="info-card">
-            <p><strong>Total Fats needed today:</strong> 70 grams</p>
-            <p><strong>Fats Consumed today:</strong> 55 grams</p>
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="chart-container" id="fatsContainer">
+            <canvas id="fatsChart"></canvas>
+            <div class="icon">Fats 🧈</div>
+            <div class="info-card"></div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Meal Input Section -->
+    <div class="mt-4">
+      <label for="meal-time">What time is this meal (Breakfast, Lunch, Dinner)?</label>
+      <input type="text" id="meal-time" placeholder="e.g., Breakfast" class="form-control">
+      <label for="title" class="mt-2">What is the name of the food you ate?</label>
+      <input type="text" id="title" placeholder="e.g., Fresh Ham Roasted With Rye Bread" class="form-control">
+      <label for="ingredients" class="mt-2">List the ingredients (separated by commas):</label>
+      <input type="text" id="ingredients" placeholder="e.g., 1 fresh ham, 7 cloves garlic, 1 tablespoon olive oil" class="form-control">
+      <button type="button" class="btn btn-primary mt-3" onclick="makeCorsRequest()">Submit</button>
+      <pre id="response" class="mt-2"></pre>
+    </div>
   </div>
 
-  <!-- JavaScript Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- JavaScript for Logout -->
-  <script>
-    function logout() {
-      alert("You have been logged out!");
-      window.location.href = "/login.html";
-    }
-  </script>
+  <script src="/scripts/logout.js"></script>
 
   <!-- Chart.js Configuration -->
   <script>
-    function createDonutChart(ctx, data, backgroundColors) {
+    const targets = {
+      calories: 2500,
+      carbs: 300,
+      protein: 50,
+      fats: 70
+    };
+
+    const initialConsumption = {
+      calories: 0,
+      carbs: 0,
+      protein: 0,
+      fats: 0
+    };
+
+    // Initialize charts with default values
+    function initCharts() {
+      updateDonutChart('caloriesChart', initialConsumption.calories, targets.calories, '#FF6384');
+      updateDonutChart('carbsChart', initialConsumption.carbs, targets.carbs, '#36A2EB');
+      updateDonutChart('proteinChart', initialConsumption.protein, targets.protein, '#FFCE56');
+      updateDonutChart('fatsChart', initialConsumption.fats, targets.fats, '#4BC0C0');
+    }
+
+    function updateDonutChart(chartId, consumed, total, color) {
+      const ctx = document.getElementById(chartId).getContext('2d');
+      const remaining = Math.max(0, total - consumed);
+
+      // Destroy existing chart if it exists
+      const existingChart = Chart.getChart(chartId);
+      if (existingChart) {
+        existingChart.destroy();
+      }
+
+      // Create new chart
       new Chart(ctx, {
         type: 'doughnut',
         data: {
           labels: ['Consumed', 'Remaining'],
           datasets: [{
-            data: data,
-            backgroundColor: backgroundColors
+            data: [consumed, remaining],
+            backgroundColor: [color, '#CCCCCC']
           }]
         },
         options: {
@@ -164,14 +157,142 @@
           }
         }
       });
+
+      // Update the info card
+      const container = document.getElementById(chartId.replace('Chart', 'Container'));
+      const infoCard = container.querySelector('.info-card');
+      infoCard.innerHTML = 
+        `<p><strong>Total needed today:</strong> ${total} ${getUnit(chartId)}</p>
+         <p><strong>Consumed today:</strong> ${consumed.toFixed(2)} ${getUnit(chartId)}</p>`;
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      createDonutChart(document.getElementById('caloriesChart').getContext('2d'), [1800, 700], ['#FF6384', '#CCCCCC']);
-      createDonutChart(document.getElementById('carbsChart').getContext('2d'), [125, 175], ['#36A2EB', '#CCCCCC']);
-      createDonutChart(document.getElementById('proteinChart').getContext('2d'), [35, 15], ['#FFCE56', '#CCCCCC']);
-      createDonutChart(document.getElementById('fatsChart').getContext('2d'), [55, 15], ['#4BC0C0', '#CCCCCC']);
-    });
+    // Helper function to get the appropriate unit for each nutrient
+    function getUnit(chartId) {
+      switch (chartId) {
+        case 'caloriesChart':
+          return 'kcal';
+        default:
+          return 'grams';
+      }
+    }
+
+    // Function to update all charts with new data
+    function updateAllCharts(nutritionData) {
+      const newConsumption = {
+        calories: initialConsumption.calories + parseFloat(nutritionData.calories),
+        carbs: initialConsumption.carbs + parseFloat(nutritionData.carbohydrates),
+        protein: initialConsumption.protein + parseFloat(nutritionData.protein),
+        fats: initialConsumption.fats + parseFloat(nutritionData.fats)
+      };
+
+      // Update each chart with new values
+      updateDonutChart('caloriesChart', newConsumption.calories, targets.calories, '#FF6384');
+      updateDonutChart('carbsChart', newConsumption.carbs, targets.carbs, '#36A2EB');
+      updateDonutChart('proteinChart', newConsumption.protein, targets.protein, '#FFCE56');
+      updateDonutChart('fatsChart', newConsumption.fats, targets.fats, '#4BC0C0');
+
+      // Save updated consumption data for future reference
+      localStorage.setItem('nutritionData', JSON.stringify(newConsumption));
+    }
+
+    // Call the init function on page load
+    window.onload = initCharts;
   </script>
+
+  <!-- To display the response from the API -->
+  <pre id="response"></pre>
+
+  <script>
+    const app_id = "a9117ed0";
+    const app_key = "8cce3f9bebdcc9fef5243e23387c0bc0";
+
+    // Create the XHR object.
+    function createCORSRequest(method, url) {
+      var xhr = new XMLHttpRequest();
+      if ("withCredentials" in xhr) {
+        xhr.open(method, url, true);
+      } else if (typeof XDomainRequest != "undefined") {
+        xhr = new XDomainRequest();
+        xhr.open(method, url);
+      } else {
+        xhr = null;
+      }
+      return xhr;
+    }
+
+    // Validate user inputs
+    function validateInputs(title, ingredients, mealTime) {
+      if (mealTime.trim() === '') {
+        alert('Please enter the meal time (e.g., Breakfast).');
+        return false;
+      }
+      if (title.trim() === '') {
+        alert('Please enter the name of the food.');
+        return false;
+      }
+      if (ingredients.length === 0 || ingredients[0].trim() === '') {
+        alert('Please enter at least one ingredient.');
+        return false;
+      }
+      return true;
+    }
+
+    // Make the actual CORS request.
+    function makeCorsRequest() {
+      let mealTime = document.getElementById('meal-time').value;
+      let title = document.getElementById('title').value;
+      let ingredients = document.getElementById('ingredients').value.split(',');
+
+      if (!validateInputs(title, ingredients, mealTime)) {
+        return; // Stop execution if validation fails
+      }
+
+      let recipeData = {
+        "title": title,
+        "yield": "1 serving",
+        "ingr": ingredients.map(item => item.trim())
+      };
+
+      let pre = document.getElementById('response');
+      var url = 'https://api.edamam.com/api/nutrition-details?app_id=' + app_id + '&app_key=' + app_key;
+
+      var xhr = createCORSRequest('POST', url);
+      if (!xhr) {
+        alert('CORS not supported');
+        return;
+      }
+
+      // Response handler
+      xhr.onload = function () {
+        var response = JSON.parse(xhr.responseText);
+        if (response.totalNutrients) {
+          let nutritionData = {
+            calories: response.totalNutrients.ENERC_KCAL ? response.totalNutrients.ENERC_KCAL.quantity : 0,
+            carbohydrates: response.totalNutrients.CHOCDF ? response.totalNutrients.CHOCDF.quantity : 0,
+            protein: response.totalNutrients.PROCNT ? response.totalNutrients.PROCNT.quantity : 0,
+            fats: response.totalNutrients.FAT ? response.totalNutrients.FAT.quantity : 0
+          };
+
+          updateAllCharts(nutritionData);
+          localStorage.setItem('mealData', JSON.stringify(recipeData)); // Save the data for Card.html
+
+          // Display nutrition data in the response area
+          pre.innerHTML = `Calories: ${nutritionData.calories} kcal\nCarbohydrates: ${nutritionData.carbohydrates} g\nProtein: ${nutritionData.protein} g\nFats: ${nutritionData.fats} g`;
+        } else {
+          pre.innerHTML = 'No nutrition information found.';
+        }
+      };
+
+      xhr.onerror = function () {
+        alert('Error making the request. Please try again.');
+      };
+
+      pre.innerHTML = 'Loading...'; // Show loading text while waiting for response
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.send(JSON.stringify(recipeData)); // Send the recipe data to the API
+    }
+  </script>
+
 </body>
+
 </html>
