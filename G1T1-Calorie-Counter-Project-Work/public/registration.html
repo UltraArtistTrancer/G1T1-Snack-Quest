@@ -18,10 +18,14 @@
             padding: 0;
             text-align: center;
             color: #fff;
-            background: linear-gradient(135deg, #2b1d5a, #a296ca, #282b75, #1d161e, #4c1c46);
             background-size: 400% 400%;
             animation: gradientAnimation 30s ease infinite;
             overflow-x: hidden;
+            background-image: url('images/picture.png');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+
         }
 
         h2 {
@@ -193,7 +197,7 @@
                 // Save user data to Firestore
                 await setDoc(doc(db, "users", userId), userData);
                 alert('Registration successful! Redirecting to the main page.');
-                window.location.href = "3DVersion.html";
+                window.location.href = "views/home.html";
             } catch (error) {
                 console.error("Error during registration:", error);
                 alert(error.message);

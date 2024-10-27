@@ -37,7 +37,7 @@
 
         /* Heading and form styling */
         .login-container h2 {
-            color: red;
+            color: brown;
             margin-bottom: 20px;
             font-weight: bold;
         }
@@ -78,7 +78,7 @@
                 <label for="login-password">Password</label>
             </div>
             <button type="submit" class="btn btn-primary">Login</button>
-            <p>Don't have an account? <a href="register.html" id="show-register">Register here</a></p>
+            <p>Don't have an account? <a href="registration.html" id="show-register">Register here</a></p>
         </form>
     </div>
 
@@ -120,7 +120,7 @@
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                window.location.href = "/views/index.html";
+                window.location.href = "/views/home.html";
             }
         });
     </script>
