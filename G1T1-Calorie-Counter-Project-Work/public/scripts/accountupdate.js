@@ -43,6 +43,7 @@ async function populateUpdateForm(userId) {
     if (userData) {
         document.getElementById('update-username').value = userData.username;
         document.getElementById('birthdate').value = userData.birthdate;
+        document.getElementById('sex').value = userData.sex;
         document.getElementById('height').value = userData.height;
         document.getElementById('weight').value = userData.weight;
         document.getElementById('lifestyle').value = userData.lifestyle;
@@ -52,6 +53,7 @@ async function populateUpdateForm(userId) {
         document.getElementById('update-dinner-time').value = userData.mealTimes.dinner;
 
         document.getElementById('display-username').textContent = userData.username;
+        document.getElementById('display-sex').textContent = userData.sex;
         document.getElementById('display-birthdate').textContent = userData.birthdate;
         document.getElementById('display-height').textContent = userData.height;
         document.getElementById('display-weight').textContent = userData.weight;
@@ -138,7 +140,7 @@ updateForm.addEventListener('submit', async (e) => {
 
         await updateDoc(doc(db, "users", userId), updatedData);
         alert('User data updated successfully!');
-        window.location.href = "3DVersion.html";
+        window.location.href = "../views/home.html";
     } catch (error) {
         console.error('Error updating user data:', error);
         alert('Failed to update user data. Please try again.');

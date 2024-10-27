@@ -38,6 +38,7 @@ async function populateUpdateForm(userId) {
     const userData = await fetchUserData(userId);
     if (userData) {
         document.getElementById('update-username').value = userData.username;
+        document.getElementById('sex').value = userData.sex;
         document.getElementById('birthdate').value = userData.birthdate;
         document.getElementById('height').value = userData.height;
         document.getElementById('weight').value = userData.weight;
@@ -48,6 +49,7 @@ async function populateUpdateForm(userId) {
         document.getElementById('update-dinner-time').value = userData.mealTimes.dinner;
 
         document.getElementById('display-username').textContent = userData.username;
+        document.getElementById('display-sex').textContent = userData.sex;
         document.getElementById('display-birthdate').textContent = userData.birthdate;
         document.getElementById('display-height').textContent = userData.height;
         document.getElementById('display-weight').textContent = userData.weight;

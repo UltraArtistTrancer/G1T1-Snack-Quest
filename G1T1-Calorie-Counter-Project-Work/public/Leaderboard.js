@@ -26,6 +26,7 @@ console.log("Firebase Firestore Initialized:", db);
 
 // Fetch leaderboard function
 async function fetchLeaderboard(currentUserId) {
+    console.log(currentUserId)
     const usersCollectionRef = collection(db, "users");
     try {
         const querySnapshot = await getDocs(usersCollectionRef);
@@ -81,6 +82,6 @@ onAuthStateChanged(auth, (user) => {
     } else {
         console.log("No user is logged in");
         // Optionally redirect to login page
-        window.location.href = "index.html";
+        window.location.href = "../index.html";
     }
 });
