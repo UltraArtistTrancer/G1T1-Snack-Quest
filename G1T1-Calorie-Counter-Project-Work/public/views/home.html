@@ -11,6 +11,8 @@
     /* Add your custom styles here */
     .page-container {
       padding: 10px;
+      overflow: hidden; /* Prevents overlap */
+      padding-bottom: 120px; /* Adds extra space at the bottom */
     }
 
     .chart-container {
@@ -27,6 +29,40 @@
     .icon {
       font-size: 30px;
       margin-bottom: 10px;
+    }
+
+    .chart-container {
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      height: 250px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between; /* Ensure space between elements */
+    }
+
+    .info-card {
+      margin-top: 10px; /* Add spacing between elements */
+      white-space: nowrap; /* Prevent text from wrapping unnecessarily */
+    }
+
+    .typing-area {
+      margin-top: 40px; /* Adds space between the charts and form */
+      display: flex;
+      justify-content: center; /* Centers the form */
+      align-items: center;
+      position: relative; /* Ensures proper flow of content */
+    }
+
+    .typing-input {
+      width: 300px; /* Adjust width of the input box */
+      margin-right: 10px; /* Space between input and button */
+    }
+
+    button.icon {
+      padding: 10px 20px;
+      font-size: 16px;
     }
   </style>
 </head>
@@ -89,7 +125,7 @@
     </div>
 
     <!-- Meal Input Section -->
-    <div class="mt-4">
+    <!-- <div class="mt-4">
       <label for="meal-time">What time is this meal (Breakfast, Lunch, Dinner)?</label>
       <input type="text" id="meal-time" placeholder="e.g., Breakfast" class="form-control">
       <label for="title" class="mt-2">What is the name of the food you ate?</label>
@@ -98,7 +134,32 @@
       <input type="text" id="ingredients" placeholder="e.g., 1 fresh ham, 7 cloves garlic, 1 tablespoon olive oil" class="form-control">
       <button type="button" class="btn btn-primary mt-3" onclick="makeCorsRequest()">Submit</button>
       <pre id="response" class="mt-2"></pre>
+    </div> -->
+  </div>
+  <div>
+    <!-- Typing Area -->
+    <div class="typing-area">
+        <form action="#" class="typing-form">
+            <div class="input-wrapper">
+                <input type="text" placeholder="What have you eaten?" class="typing-input" required><br>
+                <label for="meal-time">Select Meal Time:</label>
+                  <select id="meal-time" name="meal-time" class="form-control">
+                    <option value="breakfast">Breakfast</option>
+                    <option value="lunch">Lunch</option>
+                    <option value="dinner">Dinner</option>
+                    <option value="others">Others</option>
+                  </select>
+                <button class="icon material-symbols-rounded">send</button>
+            </div>
+        </form>
     </div>
+
+    <!-- Chat List / Container -->
+    <div class="chat-list">
+      <!-- dynamically appendchild -->
+    </div>
+
+    <script src="../scripts/NakedGeminiNutritionWrapper2.js"></script>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
