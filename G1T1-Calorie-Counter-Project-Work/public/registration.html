@@ -103,7 +103,6 @@
         const functions = getFunctions(app, "asia-southeast1");
 
         const registerForm = document.getElementById('registrationForm');
-
         const checkUsernameFunction = httpsCallable(functions, 'checkUsername');
 
         // Function to check if the username is taken
@@ -129,6 +128,7 @@
             if (hasSpaces) {
                 usernameStatus.textContent = 'Username cannot contain spaces.';
                 usernameStatus.style.color = 'red'; // Optional: change text color for error
+                return;
             }
 
             const isUnique = await isUsernameUnique(username);
@@ -144,11 +144,19 @@
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            const username = document.getElementById('username').value;
+            const hasSpaces = /\s/.test(username);
+            if (hasSpaces) {
+            alert("Username cannot contain spaces.");
+            return;
+            }
+
+
+
             await fetchNutritionData();
 
             const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
-            const username = document.getElementById('username').value;
             const birthdate = document.getElementById('birthdate').value;
             const height = document.getElementById('height').value;
             const weight = document.getElementById('weight').value;

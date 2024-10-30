@@ -78,6 +78,14 @@ async function checkUsername() {
     const usernameInput = document.getElementById('update-username').value;
     const usernameStatus = document.getElementById('username-status');
     const currentUsername =  document.getElementById('display-username').textContent;
+    const hasSpaces = /\s/.test(usernameInput);
+
+    if (hasSpaces) {
+        usernameStatus.textContent = 'Username cannot contain spaces.';
+        usernameStatus.style.color = 'red'; // Optional: change text color for error
+        return;
+    }
+
     console.log("Current Username:", currentUsername)
 
     if (usernameInput) {
@@ -103,11 +111,17 @@ updateForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     try {
+        const newUsername = document.getElementById('update-username').value;
+        const hasSpaces = /\s/.test(newUsername);
+        if (hasSpaces) {
+        alert("Username cannot contain spaces.");
+        return;
+        }
+
         // Call fetchNutritionData and wait for it to complete
         await fetchNutritionData(); // This will populate the nutrition data
 
         const userId = auth.currentUser.uid; // Get current user ID
-        const newUsername = document.getElementById('update-username').value;
         const currentUsername =  document.getElementById('display-username').textContent;
 
         // Ensure the username is still available
