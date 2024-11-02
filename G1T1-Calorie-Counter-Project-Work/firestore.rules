@@ -5,6 +5,12 @@ service cloud.firestore {
         match /users/{userId} {
             allow read: if request.auth != null; // Allow any authenticated user to read users
             allow write: if request.auth != null && request.auth.uid == userId; // Allow users to write to their own document
+        	
+            // Allow authenticated users to add friends in the friends subcollection
+            match /friends/{friendId} {
+            allow read: if request.auth != null;
+            allow write: if request.auth != null && (request.auth.uid == userId || request.auth.uid == friendId);
+          }
         }
     }
 }
