@@ -151,7 +151,7 @@
       <div class="typing-area">
         <form id="updateForm" class="card p-4 shadow-sm">
           <div class="row mb-3">
-            <div class="col-md-6">
+            <div class="col-md-12">
               <label for="mealDropdown">Select Meal Type:</label>
               <select id="mealDropdown">
                 <option value="breakfast">Breakfast</option>
@@ -176,10 +176,25 @@
         <script type="module" src="../scripts/FoodInputUpdate.js"></script>
       </div>
 
-      <!-- Gemini Chat List / Container -->
-      <div class="chat-list">
-        <!-- dynamically appendchild of gemini response ; using appendchild as console-->
+      <!-- delete last meal -->
+      <div class="typing-area">
+        <form id="deleteLastMealForm" class="card p-4 shadow-sm">
+          <div class="row mb-3"><h3>Delete Last Meal Added</h3>
+            <div class="col-md-12">
+              <p id="mealType"></p>
+              <p id="foodInput"></p>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-success btn-block mt-3">
+            Delete
+          </button>
+        </form>
+        <script type="module" src="../scripts/deleteLastFood.js"></script>
       </div>
+
+      <div id="foodContainer"></div>
+      <script type="module" src="../scripts/deleteLastFood.js"></script>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
