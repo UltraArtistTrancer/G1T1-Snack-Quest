@@ -1,0 +1,98 @@
+<html lang="en" dir="ltr">
+
+  <head>
+    <meta charset="utf-8">
+    <title>Edamam Nutrition Analysis</title>
+  </head>
+
+  <body>
+    <h1>Nutrition Analysis API</h1>
+
+    <!-- Input for the name of the food -->
+    <label for="title">What is the name of the food you ate?</label>
+    <input type="text" id="title" placeholder="e.g., Fresh Ham Roasted With Rye Bread" style="width: 100%;">
+    <br><br>
+
+    <!-- Input for ingredients -->
+    <label for="ingredients">List the ingredients (separated by commas):</label>
+    <input type="text" id="ingredients" placeholder="e.g., 1 fresh ham, 7 cloves garlic, 1 tablespoon olive oil" style="width: 100%;">
+    <br><br>
+
+    <!-- Submit button -->
+    <button type="button" onclick="makeCorsRequest()">Submit</button>
+
+    <hr> Response:
+    <br>
+
+    <!-- To display the response from the API -->
+    <pre id="response"></pre>
+
+    <script>
+      // API credentials are hardcoded
+      const app_id = "a9117ed0";
+      const app_key = "8cce3f9bebdcc9fef5243e23387c0bc0";
+
+      // Create the XHR object.
+      function createCORSRequest(method, url) {
+        var xhr = new XMLHttpRequest();
+        if ("withCredentials" in xhr) {
+          xhr.open(method, url, true);
+        } else if (typeof XDomainRequest != "undefined") {
+          xhr = new XDomainRequest();
+          xhr.open(method, url);
+        } else {
+          xhr = null;
+        }
+        return xhr;
+      }
+
+      // Make the actual CORS request.
+      function makeCorsRequest() {
+        let title = document.getElementById('title').value;
+        let ingredients = document.getElementById('ingredients').value.split(',');
+
+        // Constructing the recipe data
+        let recipeData = {
+          "title": title,
+          "yield": "1 serving",
+          "ingr": ingredients.map(item => item.trim()) // Remove extra spaces around ingredients
+        };
+
+        let pre = document.getElementById('response');
+        var url = 'https://api.edamam.com/api/nutrition-details?app_id=' + app_id + '&app_key=' + app_key;
+
+        var xhr = createCORSRequest('POST', url);
+        if (!xhr) {
+          alert('CORS not supported');
+          return;
+        }
+
+        // Response handler
+        xhr.onload = function() {
+          var response = JSON.parse(xhr.responseText);
+          if (response.totalNutrients) {
+            // Extract and format the required values to 2 decimal places
+            let calories = response.totalNutrients.ENERC_KCAL.quantity.toFixed(2);
+            let carbohydrates = response.totalNutrients.CHOCDF.quantity.toFixed(2);
+            let protein = response.totalNutrients.PROCNT.quantity.toFixed(2);
+            let fats = response.totalNutrients.FAT.quantity.toFixed(2);
+
+            // Display the extracted values
+            pre.innerHTML = `Calories: ${calories} kcal\nCarbohydrates: ${carbohydrates} g\nProtein: ${protein} g\nFats: ${fats} g`;
+          } else {
+            pre.innerHTML = 'No nutrition information found.';
+          }
+        };
+
+        // Error handler
+        xhr.onerror = function() {
+          alert('Woops, there was an error making the request.');
+        };
+
+        pre.innerHTML = 'Loading...'; // Show loading text while waiting for response
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(recipeData)); // Send the recipe data to the API
+      }
+    </script>
+  </body>
+</html>
