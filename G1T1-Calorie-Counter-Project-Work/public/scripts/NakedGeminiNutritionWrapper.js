@@ -56,7 +56,7 @@ const showLoadingAnimation = () => {
 // Handle sending outgoing chat messages
 const handleOutgoingChat = () => {
     userMessage = typingForm.querySelector(".typing-input").value.trim();
-    nutritionQueryWrapper = "below is the food I ate. I want the calories, carbohydrates, protein, and fats composition of the food in csv format e.g. 'calories|528|carbohydrates|48|protein|23|fats|27'. I only want whole numbers, do not give me a range, do not give me any other information apart from the csv values:";
+    nutritionQueryWrapper = "below is the food I ate. I want the calories, carbohydrates, protein, and fats composition of the food in csv format e.g. 'calories,528,carbohydrates,48,protein,23,fats,27'. I only want whole numbers, do not give me a range, do not give me any other information apart from the csv values:";
     userMessage = nutritionQueryWrapper + userMessage;
     if(!userMessage) return; //Exit if there is no message
 
