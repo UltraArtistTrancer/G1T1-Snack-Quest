@@ -9,18 +9,24 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="../scripts/logout.js"></script>
     <style>
+         .alert {
+            display: none;
+            margin-top: 1rem;
+        }
+
         .chart-container {
             margin-bottom: 2rem;
             padding: 1rem;
             background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .chart-title {
             text-align: center;
             color: #333;
             margin-bottom: 1rem;
         }
+
         #error-message {
             color: red;
             text-align: center;
@@ -55,13 +61,13 @@
     <div class="container mt-5">
         <h2 class="text-center mb-4">Your Nutrition Tracking</h2>
         <div id="error-message"></div>
-        
+
         <div class="row">
             <div class="col-12 chart-container">
                 <h3 class="chart-title">Daily Calorie Intake</h3>
                 <canvas id="calorieChart"></canvas>
             </div>
-            
+
             <div class="col-12 chart-container">
                 <h3 class="chart-title">Macronutrient Breakdown</h3>
                 <canvas id="macroChart"></canvas>
@@ -74,7 +80,7 @@
                     <div class="card-body">
                         <h5 class="card-title">Nutrition Summary</h5>
                         <p class="card-text">
-                            This chart shows your daily nutrition intake over time. 
+                            This chart shows your daily nutrition intake over time.
                             Track your progress and maintain a balanced diet by monitoring:
                         </p>
                         <ul>
