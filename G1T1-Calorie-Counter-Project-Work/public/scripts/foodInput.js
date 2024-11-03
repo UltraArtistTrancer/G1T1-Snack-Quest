@@ -1,4 +1,28 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
+// Initialize Firebase (add your config)
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// Food history functions
+async function getFoodHistory(userId) {
+    try {
+        const userRef = doc(db, "users", userId);
+        const userDoc = await getDoc(userRef);
+        
+        if (userDoc.exists()) {
+            const foodHistory = userDoc.data().foodHistory || [];
+            return foodHistory.sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort newest first
+        }
+        return [];
+    } catch (error) {
+        console.error("Error getting food history:", error);
+        throw error;
+    }
+}
 
 async function addFoodEntry(userId, foodData) {
     try {
@@ -6,10 +30,8 @@ async function addFoodEntry(userId, foodData) {
         const userDoc = await getDoc(userRef);
         
         if (userDoc.exists()) {
-            // Get existing food history or create empty array if it doesn't exist
             const currentFoodHistory = userDoc.data().foodHistory || [];
             
-            // Create new food entry
             const newFoodEntry = {
                 date: new Date().toISOString(),
                 foodName: foodData.foodName,
@@ -20,15 +42,12 @@ async function addFoodEntry(userId, foodData) {
                 mealType: foodData.mealType
             };
             
-            // Add new entry to history array
             const updatedFoodHistory = [...currentFoodHistory, newFoodEntry];
             
-            // Update the document
             await updateDoc(userRef, {
                 foodHistory: updatedFoodHistory
             });
             
-            console.log("Food entry added successfully");
             return true;
         }
         return false;
@@ -38,12 +57,18 @@ async function addFoodEntry(userId, foodData) {
     }
 }
 
-// Example of how to connect this to your form
+// Form handling
 document.addEventListener('DOMContentLoaded', () => {
     const foodForm = document.getElementById('food-form');
+    const successMessage = document.getElementById('success-message');
+    const errorMessage = document.getElementById('error-message');
     
-    foodForm.addEventListener('submit', async (e) => {
+    foodForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
+        
+        // Hide any existing messages
+        if (successMessage) successMessage.style.display = 'none';
+        if (errorMessage) errorMessage.style.display = 'none';
         
         const foodData = {
             foodName: document.getElementById('food-name').value,
@@ -58,14 +83,31 @@ document.addEventListener('DOMContentLoaded', () => {
         if (user) {
             try {
                 await addFoodEntry(user.uid, foodData);
-                // Clear form or show success message
                 foodForm.reset();
-                alert('Food entry added successfully!');
+                if (successMessage) {
+                    successMessage.textContent = 'Food entry added successfully!';
+                    successMessage.style.display = 'block';
+                } else {
+                    alert('Food entry added successfully!');
+                }
             } catch (error) {
-                alert('Error adding food entry. Please try again.');
+                if (errorMessage) {
+                    errorMessage.textContent = 'Error adding food entry. Please try again.';
+                    errorMessage.style.display = 'block';
+                } else {
+                    alert('Error adding food entry. Please try again.');
+                }
             }
         } else {
-            alert('Please log in to add food entries.');
+            if (errorMessage) {
+                errorMessage.textContent = 'Please log in to add food entries.';
+                errorMessage.style.display = 'block';
+            } else {
+                alert('Please log in to add food entries.');
+            }
         }
     });
-}); 
+});
+
+// Export functions for use in other files
+export { getFoodHistory, addFoodEntry }; 
