@@ -95,53 +95,26 @@ const foodAliases = {
 };
 
 
-// Modified searchLocalFood function to handle different spellings
+// Add this function to search the singaporeFoodDB
 async function searchLocalFood(query) {
     query = query.toLowerCase().trim();
     
-    // First, check if the query matches any aliases
-    const matchedFood = Object.entries(foodAliases).find(([_, aliases]) => 
-        aliases.some(alias => 
-            alias.includes(query) || query.includes(alias) ||
-            // Add Levenshtein distance check for typos
-            aliases.some(alias => levenshteinDistance(query, alias) <= 2)
-        )
+    // First check food aliases
+    const matchedAlias = Object.entries(foodAliases).find(([_, aliases]) => 
+        aliases.some(alias => alias.toLowerCase().includes(query))
     );
     
-    if (matchedFood) {
-        const [mainName] = matchedFood;
+    if (matchedAlias) {
+        const [mainName] = matchedAlias;
         return [singaporeFoodDB[mainName]];
     }
     
-    // Fallback to direct database search
+    // Then check direct matches in singaporeFoodDB
     const results = Object.entries(singaporeFoodDB).filter(([key]) => 
-        key.includes(query) || query.includes(key) ||
-        levenshteinDistance(query, key) <= 2
+        key.includes(query)
     );
     
     return results.map(([_, value]) => value);
-}
-
-// Add Levenshtein distance function for fuzzy matching
-function levenshteinDistance(str1, str2) {
-    const track = Array(str2.length + 1).fill(null).map(() =>
-        Array(str1.length + 1).fill(null));
-    
-    for(let i = 0; i <= str1.length; i++) track[0][i] = i;
-    for(let j = 0; j <= str2.length; j++) track[j][0] = j;
-    
-    for(let j = 1; j <= str2.length; j++) {
-        for(let i = 1; i <= str1.length; i++) {
-            const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1;
-            track[j][i] = Math.min(
-                track[j][i - 1] + 1,
-                track[j - 1][i] + 1,
-                track[j - 1][i - 1] + indicator
-            );
-        }
-    }
-    
-    return track[str2.length][str1.length];
 }
 
 // Form handling

@@ -10,41 +10,71 @@
             display: none;
             margin-top: 1rem;
         }
+        .suggestions-container {
+            position: relative;
+        }
+        #suggestions {
+            position: absolute;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            z-index: 1000;
+            display: none;
+        }
+        .suggestion-item {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background-color: #f8f9fa;
+        }
+        .readonly-input {
+            background-color: #e9ecef;
+        }
     </style>
 </head>
 <body>
     <div class="container mt-5">
         <h2>Add Food Entry</h2>
         
-        <!-- Success/Error Messages -->
         <div id="success-message" class="alert alert-success" role="alert"></div>
         <div id="error-message" class="alert alert-danger" role="alert"></div>
         
-        <!-- Your existing form -->
         <form id="food-form">
             <div class="mb-3">
                 <label for="food-name" class="form-label">Food Name</label>
-                <input type="text" class="form-control" id="food-name" required>
+                <div class="suggestions-container">
+                    <input type="text" class="form-control" id="food-name" 
+                           placeholder="Type to search for food..." required>
+                    <div id="suggestions"></div>
+                </div>
             </div>
             
             <div class="mb-3">
                 <label for="calories" class="form-label">Calories</label>
-                <input type="number" class="form-control" id="calories" required min="0">
+                <input type="number" class="form-control readonly-input" id="calories" 
+                       readonly required min="0">
             </div>
             
             <div class="mb-3">
                 <label for="protein" class="form-label">Protein (g)</label>
-                <input type="number" class="form-control" id="protein" required min="0">
+                <input type="number" class="form-control readonly-input" id="protein" 
+                       readonly required min="0">
             </div>
             
             <div class="mb-3">
                 <label for="carbs" class="form-label">Carbohydrates (g)</label>
-                <input type="number" class="form-control" id="carbs" required min="0">
+                <input type="number" class="form-control readonly-input" id="carbs" 
+                       readonly required min="0">
             </div>
             
             <div class="mb-3">
                 <label for="fat" class="form-label">Fat (g)</label>
-                <input type="number" class="form-control" id="fat" required min="0">
+                <input type="number" class="form-control readonly-input" id="fat" 
+                       readonly required min="0">
             </div>
             
             <div class="mb-3">
@@ -56,6 +86,11 @@
                     <option value="dinner">Dinner</option>
                     <option value="snack">Snack</option>
                 </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="meal-datetime" class="form-label">When did you eat?</label>
+                <input type="datetime-local" class="form-control" id="meal-datetime" required>
             </div>
             
             <button type="submit" class="btn btn-primary">Add Food Entry</button>
