@@ -61,14 +61,32 @@ const History = () => {
     // Modify the nutrition summary calculation to use filtered entries
     useEffect(() => {
         const filteredEntries = getFilteredEntries();
-        const summary = filteredEntries.reduce((acc, entry) => ({
-            calories: acc.calories + entry.nutrition.calories,
-            carbohydrates: acc.carbohydrates + entry.nutrition.carbs,
-            protein: acc.protein + entry.nutrition.protein,
-            fats: acc.fats + entry.nutrition.fats
-        }), { calories: 0, carbohydrates: 0, protein: 0, fats: 0 });
+        const entryCount = filteredEntries.length;
 
-        setNutritionSummary(summary);
+        if (entryCount > 0) {
+            const summary = filteredEntries.reduce((acc, entry) => ({
+                calories: acc.calories + entry.nutrition.calories,
+                carbohydrates: acc.carbohydrates + entry.nutrition.carbs,
+                protein: acc.protein + entry.nutrition.protein,
+                fats: acc.fats + entry.nutrition.fats
+            }), { calories: 0, carbohydrates: 0, protein: 0, fats: 0 });
+
+            // Calculate averages
+            setNutritionSummary({
+                calories: Math.round(summary.calories / entryCount),
+                carbohydrates: Math.round(summary.carbohydrates / entryCount),
+                protein: Math.round(summary.protein / entryCount),
+                fats: Math.round(summary.fats / entryCount)
+            });
+        } else {
+            // Reset summary if no entries
+            setNutritionSummary({
+                calories: 0,
+                carbohydrates: 0,
+                protein: 0,
+                fats: 0
+            });
+        }
     }, [getFilteredEntries]);
 
     // Add this before the return statement
