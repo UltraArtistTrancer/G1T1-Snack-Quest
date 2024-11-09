@@ -1,11 +1,8 @@
-async function fetchNutritionData() {
-    return new Promise((resolve, reject) => {
-        const sex = document.getElementById('sex').value;
-        const age = document.getElementById('currentAge').value;
-        const height = document.getElementById('height').value;
-        const weight = document.getElementById('weight').value;
-        const activity = document.getElementById('lifestyle').value;
+// NutritionAPI.js
+import axios from 'axios';
 
+async function fetchNutritionData({ sex, age, height, weight, activity }) {
+    return new Promise((resolve, reject) => {
         const apiUrl = 'https://nutrition-calculator.p.rapidapi.com/api/nutrition-info';
 
         axios.get(apiUrl, { 
@@ -14,10 +11,10 @@ async function fetchNutritionData() {
                 'x-rapidapi-host': 'nutrition-calculator.p.rapidapi.com'
             },
             params: {
-                measurement_units: 'met', // fixed (intent of app is local purpose)
+                measurement_units: 'met',
                 sex: sex,
                 age_value: age,
-                age_type: 'yrs', // fixed (months not needed)
+                age_type: 'yrs',
                 cm: height,
                 kilos: weight,
                 activity_level: activity
@@ -34,26 +31,21 @@ async function fetchNutritionData() {
                 macronutrient_dict[item[0]] = item[1];
             });
 
-            const carbohydrates = macronutrient_dict["Carbohydrate"] || "N/A";
-            const protein = macronutrient_dict["Protein"] || "N/A";
-            const fat = macronutrient_dict["Fat"] || "N/A";
-            const fiber = macronutrient_dict["Total Fiber"] || "N/A";
+            const result = {
+                carbohydrates: macronutrient_dict["Carbohydrate"] || "N/A",
+                protein: macronutrient_dict["Protein"] || "N/A",
+                fat: macronutrient_dict["Fat"] || "N/A",
+                fiber: macronutrient_dict["Total Fiber"] || "N/A",
+                bmi: bmi,
+                calorieNeeds: calorie_needs
+            };
 
-            document.getElementById('carbohydrates').value = carbohydrates;
-            document.getElementById('protein').value = protein;
-            document.getElementById('fat').value = fat;
-            document.getElementById('fiber').value = fiber;
-            document.getElementById('bmi').value = bmi;
-            document.getElementById('calorieNeeds').value = calorie_needs;
-
-            resolve(); // Resolve the promise when done
+            resolve(result); // Resolve with the data object
         })
         .catch(error => {
-            reject(error); // Reject the promise in case of error
+            reject(error); // Reject in case of error
         });
     });
 }
 
-
-// Export the function for use in other modules
 export { fetchNutritionData };
