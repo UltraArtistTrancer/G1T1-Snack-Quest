@@ -112,7 +112,13 @@ const Register = () => {
                 weight,
                 activity: lifestyle
             });
-            console.log(nutritionData);
+            console.log(sex);
+            console.log(gender);
+            console.log(age);
+            console.log(height);
+            console.log(weight);
+            console.log(activity);
+            console.log(lifestyle);
 
             // await setDoc(doc(db, "users", userId), {
             //     username,
