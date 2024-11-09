@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Form, Button, Alert, Card } from 'react-bootstrap';
+import { Form, FormField, Button, Alert, Card } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../services/firebase';
 import AuthLayout from '../components/common/AuthLayout';
 import FormField from '../components/common/FormField';
+import { fetchNutritionData } from '../services/NutritionAPI';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -30,6 +31,21 @@ const Register = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    const [age, setAge] = useState('');
+
+    const calculateAge = (birthdate) => {
+        const birthDate = new Date(birthdate);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDifference = today.getMonth() - birthDate.getMonth();
+
+        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+        }
+
+        return age;
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         if (name.includes('.')) {
@@ -46,6 +62,10 @@ const Register = () => {
                 ...prev,
                 [name]: value
             }));
+        }
+        if (name === 'birthdate') {
+            const calculatedAge = calculateAge(value);
+            setAge(calculatedAge);
         }
     };
 
@@ -138,6 +158,7 @@ const Register = () => {
                         <Form.Group className="mb-3">
                             <Form.Label>Gender</Form.Label>
                             <Form.Select
+                                id="sex"
                                 name="gender"
                                 value={formData.gender}
                                 onChange={handleChange}
@@ -157,6 +178,12 @@ const Register = () => {
                             name="birthdate"
                             required
                         />
+                        {age && (
+                            <Form.Group className="mb-3">
+                            <Form.Label>Age</Form.Label>
+                            <Form.Control type="text" value={age} readOnly />
+                            </Form.Group>
+                        )}
 
                         {/* Physical Information */}
                         <FormField
