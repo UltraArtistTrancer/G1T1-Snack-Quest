@@ -58,10 +58,9 @@ const Home = () => {
                             goals: userData.goals
                         });
                         console.log(nutritionResponse);
-                        // await updateUserData(user.uid, {
-                        //     ...formData,
-                        //     ...nutritionResponse.data
-                        // });
+                        await updateUserData(user.uid, {
+                            ...nutritionResponse.data
+                        });
                     }
                 }
             } catch (err) {
