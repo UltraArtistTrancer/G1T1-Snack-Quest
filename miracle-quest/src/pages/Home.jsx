@@ -7,7 +7,7 @@ import ChatInterface from '../components/dashboard/ChatInterface';
 import { NutritionCard } from "../components/dashboard/NutritionCard";
 import { setupMealNotifications } from '../utils/notificationHelper';
 import { fetchNutritionData } from '../services/geminiApi.js';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../services/firebase';
 
 const Home = () => {
