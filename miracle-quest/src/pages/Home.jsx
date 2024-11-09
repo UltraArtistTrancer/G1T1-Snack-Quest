@@ -34,29 +34,30 @@ const Home = () => {
             const userData = await getUserData(user.uid);
             if (!userData) return;
 
-            console.log(Date());
-            console.log(new Date());
-
-            let today = new Date().toISOString().split('T')[0];
-            console.log(today);
-            const formatDateInSingapore = (dateString) => {
-                const date = new Date(dateString);
-                const options = {
-                    year: 'numeric',
-                    month: '2-digit',  // Ensures two-digit month (e.g., '11')
-                    day: '2-digit',    // Ensures two-digit day (e.g., '09')
-                    timeZone: 'Asia/Singapore',  // Singapore timezone
-                };
+            const now = new Date();
+            console.log(Date())
+            // const today = new Date().toISOString().split('T')[0];
+            //console.log(today);
+            // const formatDateInSingapore = (dateString) => {
+            //     const date = new Date(dateString);
+            //     const options = {
+            //         year: 'numeric',
+            //         month: '2-digit',  // Ensures two-digit month (e.g., '11')
+            //         day: '2-digit',    // Ensures two-digit day (e.g., '09')
+            //         timeZone: 'Asia/Singapore',  // Singapore timezone
+            //     };
                 
                 // Get the date in the required format: YYYY-MM-DD
-                const formattedDate = date.toLocaleDateString('en-US', options);
+            //     const formattedDate = date.toLocaleDateString('en-US', options);
                 
-                // Convert the formatted date to 'YYYY-MM-DD' format
-                const [month, day, year] = formattedDate.split('/');
-                return `${year}-${month}-${day}`;
-            };
-            const thisToday=formatDateInSingapore(today)
+            //     // Convert the formatted date to 'YYYY-MM-DD' format
+            //     const [month, day, year] = formattedDate.split('/');
+            //     return `${year}-${month}-${day}`;
+            // };
+            const thisToday=now.toLocaleDateString('en-CA');
+            const thisTime = now.toLocaleTimeString('en-US', { hour12: false });
             console.log(thisToday)
+            console.log(thisTime)
             const dailyTotals = await getDailyNutrition(user.uid, thisToday);
 
             const processedTargets = {
