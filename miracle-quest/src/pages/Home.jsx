@@ -7,7 +7,8 @@ import ChatInterface from '../components/dashboard/ChatInterface';
 import { NutritionCard } from "../components/dashboard/NutritionCard";
 import { setupMealNotifications } from '../utils/notificationHelper';
 import { fetchNutritionData } from '../services/geminiApi.js';
-import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+import { doc, setDoc } from 'firebase/firestore';
+import { auth, db } from '../services/firebase';
 
 const Home = () => {
     const [error, setError] = useState(null); // Define error state
@@ -50,7 +51,7 @@ const Home = () => {
             try {
                 if (user) {
                     const userData = await getUserData(user.uid);
-                    if (userData) {
+                    if (!userData.calorieNeeds) {
                         const nutritionResponse = await fetchNutritionData({
                             sex: userData.sex,
                             age: calculateAge(userData.birthdate),
@@ -60,7 +61,10 @@ const Home = () => {
                             goals: userData.goals
                         });
                         console.log(nutritionResponse.data);
-                        await updateUserData(user.uid, {
+                        // await updateUserData(user.uid, {
+                        //     ...nutritionResponse.data
+                        // });
+                        await setDoc(doc(db, "users", user.uid), {
                             ...nutritionResponse.data
                         });
                     }
