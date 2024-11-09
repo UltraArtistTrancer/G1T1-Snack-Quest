@@ -68,16 +68,22 @@ const AboutYou = () => {
 
     const formatDate = (dateStr) => {
         const date = new Date(dateStr);
-        
+    
+        const options = {
+            month: 'short',
+            day: 'numeric',
+            timeZone: 'Asia/Singapore', // Use Singapore's timezone
+        };
+    
         switch (timeRange) {
             case 'week':
-                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                return date.toLocaleDateString('en-US', options);
             case 'month':
-                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                return date.toLocaleDateString('en-US', options);
             case 'year':
-                return date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+                return date.toLocaleDateString('en-US', { month: 'short', year: '2-digit', timeZone: 'Asia/Singapore' });
             default:
-                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                return date.toLocaleDateString('en-US', options);
         }
     };
 
