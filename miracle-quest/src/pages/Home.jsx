@@ -51,7 +51,7 @@ const Home = () => {
             try {
                 if (user) {
                     const userData = await getUserData(user.uid);
-                    if (!userData.calorieNeeds) {
+                    if (userData.calorieNeeds == 0) {
                         const nutritionResponse = await fetchNutritionData({
                             sex: userData.sex,
                             age: calculateAge(userData.birthdate),

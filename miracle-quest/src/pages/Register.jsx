@@ -80,7 +80,14 @@ const Register = () => {
                 lifestyle: formData.lifestyle,
                 goals: formData.goals,
                 mealTimes: formData.mealTimes,
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                calorieNeeds: 0,
+                carbohydrates: 0,
+                fat: 0,
+                fibre: 0,
+                protein: 0
+
+
             });
 
             navigate('/home');
