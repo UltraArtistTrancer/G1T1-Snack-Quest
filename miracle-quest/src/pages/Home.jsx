@@ -35,7 +35,18 @@ const Home = () => {
             if (!userData) return;
 
             const today = new Date().toISOString().split('T')[0];
-            const dailyTotals = await getDailyNutrition(user.uid, today);
+            console.log(today);
+            const formatDateInArkansas = (dateString) => {
+                return new Date(dateString).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    timeZone: 'America/Chicago'  // Arkansas Time Zone
+                });
+            };
+            const thisToday=formatDateInArkansas(today)
+            console.log(thisToday)
+            const dailyTotals = await getDailyNutrition(user.uid, thisToday);
 
             const processedTargets = {
                 calories: processNutritionValue(userData.calorieNeeds),
