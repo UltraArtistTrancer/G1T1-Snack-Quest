@@ -42,15 +42,33 @@ const Home = () => {
         return age;
     };
 
-    const nutritionResponse = fetchNutritionData({
-        sex: formData.sex,
-        age: calculateAge(formData.birthdate),
-        height: formData.height,
-        weight: formData.weight,
-        activity: formData.lifestyle,
-        goals: formData.goals
-    });
-    
+    // Fetch user data on component mount
+    useEffect(() => {
+        const loadUserData = async () => {
+            try {
+                if (user) {
+                    const userData = await getUserData(user.uid);
+                    if (userData) {
+                        const nutritionResponse = fetchNutritionData({
+                            sex: userData.sex,
+                            age: calculateAge(userData.birthdate),
+                            height: userData.height,
+                            weight: userData.weight,
+                            activity: userData.lifestyle,
+                            goals: userData.goals
+                        });
+                    }
+                }
+            } catch (err) {
+                setError('Failed to load user data');
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadUserData();
+    }, [user]);    
 
     const calculateDailyNutrition = useCallback(async () => {
         try {
