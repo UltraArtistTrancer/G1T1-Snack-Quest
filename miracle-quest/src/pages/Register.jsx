@@ -141,7 +141,7 @@ const Register = () => {
             // });
             const nutritionResponse = await fetchNutritionData({
                 sex: formData.gender,
-                age: age,
+                age: calculateAge(formData.birthdate),
                 height: formData.height,
                 weight: formData.weight,
                 activity: formData.lifestyle,
