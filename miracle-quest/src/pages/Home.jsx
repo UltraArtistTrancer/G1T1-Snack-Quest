@@ -57,9 +57,7 @@ const Home = () => {
                             activity: userData.lifestyle,
                             goals: userData.goals
                         });
-                        await setDoc(doc(db, "users", user.uid), {
-                            ...nutritionResponse.data
-                        });
+                        console.log(nutritionResponse.data);
                     }
                 }
             } catch (err) {
