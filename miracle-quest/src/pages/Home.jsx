@@ -34,6 +34,9 @@ const Home = () => {
             const userData = await getUserData(user.uid);
             if (!userData) return;
 
+            console.log(Date());
+            console.log(new Date());
+
             const today = new Date().toISOString().split('T')[0];
             console.log(today);
             const formatDateInSingapore = (dateString) => {
