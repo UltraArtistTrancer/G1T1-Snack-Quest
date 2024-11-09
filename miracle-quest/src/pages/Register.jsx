@@ -68,6 +68,7 @@ const Register = () => {
                 ...prev,
                 [name]: value
             }));
+            console.log(value);
         }
     };
 
