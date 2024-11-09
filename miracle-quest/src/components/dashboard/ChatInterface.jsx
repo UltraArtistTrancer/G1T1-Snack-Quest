@@ -79,7 +79,7 @@ const ChatInterface = ({ mealTime, onFoodLogged }) => {
 
         try {
             // Get today's date
-            const today = new Date().toISOString().split('T')[0];
+            const today = new Date().toLocaleDateString('en-CA');
 
             // Add food entry with nutrition info
             const nutritionInfo = await addFoodEntry(
