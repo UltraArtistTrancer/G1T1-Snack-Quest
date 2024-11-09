@@ -64,7 +64,7 @@ const Home = () => {
                         // await updateUserData(user.uid, {
                         //     ...nutritionResponse.data
                         // });
-                        await updateDoc(doc(db, "users", user.uid), {
+                        await updateUserData(user.uid, {
                             ...nutritionResponse.data
                         });
                     }
