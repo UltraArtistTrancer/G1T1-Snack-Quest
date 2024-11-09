@@ -37,7 +37,7 @@ const Home = () => {
             console.log(Date());
             console.log(new Date());
 
-            const today = new Date().toISOString().split('T')[0];
+            let today = new Date().toISOString().split('T')[0];
             console.log(today);
             const formatDateInSingapore = (dateString) => {
                 const date = new Date(dateString);
