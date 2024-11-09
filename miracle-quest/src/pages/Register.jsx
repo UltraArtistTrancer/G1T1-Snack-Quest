@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../services/firebase';
-import { fetchNutritionData } from '../services/NutritionAPI';
+import { fetchNutritionData } from '../services/geminiApi.js';
 import AuthLayout from '../components/common/AuthLayout';
 import FormField from '../components/common/FormField';
 
