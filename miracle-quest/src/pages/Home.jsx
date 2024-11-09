@@ -49,7 +49,7 @@ const Home = () => {
                 if (user) {
                     const userData = await getUserData(user.uid);
                     if (userData) {
-                        const nutritionResponse = fetchNutritionData({
+                        const nutritionResponse = await fetchNutritionData({
                             sex: userData.sex,
                             age: calculateAge(userData.birthdate),
                             height: userData.height,
