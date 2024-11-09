@@ -58,7 +58,7 @@ const Home = () => {
                             goals: userData.goals
                         });
                         console.log(nutritionResponse);
-                        await updateUserData(user.uid, {
+                        await setDoc(doc(db, "users", user.uid), {
                             ...nutritionResponse.data
                         });
                     }
