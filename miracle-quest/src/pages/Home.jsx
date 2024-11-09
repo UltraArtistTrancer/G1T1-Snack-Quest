@@ -10,6 +10,7 @@ import { fetchNutritionData } from '../services/geminiApi.js';
 import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
 const Home = () => {
+    const db = getFirestore(app);
     const [error, setError] = useState(null); // Define error state
     const { user } = useAuth();
     const [loading, setLoading] = useState(true);
