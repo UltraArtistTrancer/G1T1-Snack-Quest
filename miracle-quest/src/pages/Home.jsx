@@ -240,8 +240,8 @@ const Home = () => {
         <>
             <Navigation />
             <Container fluid className="py-4">
-                <h2 className="text-center mb-4">Welcome back, {formData.username}! {emoji} Great to see you again. Here’s a snapshot of your progress for today</h2>
-                <p className="text-center">Stay hydrated! Your recommended daily water intake is {waterIntake} ml.</p>
+                <h2 className="text-center mb-4">Welcome back, {formData.username}! {emoji}</h2>
+                <p className="text-center">Stay hydrated! Your recommended daily water intake is {waterIntake} ml. Here’s your progress for today</p>
                 <Row className="mb-4">
                     <NutritionCard
                         title="Calories"
