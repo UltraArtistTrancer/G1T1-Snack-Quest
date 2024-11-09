@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Form, Button, Alert, Card } from 'react-bootstrap';
+import { Form, Formfield, Button, Alert, Card } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
@@ -30,8 +30,29 @@ const Register = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    const [age, setAge] = useState('');
+
+    const calculateAge = (birthdate) => {
+        const birthDate = new Date(birthdate);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDifference = today.getMonth() - birthDate.getMonth();
+
+        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+        }
+
+        return age;
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
+
+        if (name === 'birthdate') {
+            const calculatedAge = calculateAge(value);
+            setAge(calculatedAge);
+        }
+
         if (name.includes('.')) {
             const [parent, child] = name.split('.');
             setFormData(prev => ({
@@ -157,6 +178,13 @@ const Register = () => {
                             name="birthdate"
                             required
                         />
+
+                        {age && (
+                                <Form.Group className="mb-3">
+                                <Form.Label>Age</Form.Label>
+                                <Form.Control type="text" value={age} readOnly />
+                                </Form.Group>
+                            )}
 
                         {/* Physical Information */}
                         <FormField
