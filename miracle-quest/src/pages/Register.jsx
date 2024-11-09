@@ -93,9 +93,9 @@ const Register = () => {
                 formData.password
             );
 
+            const gender = formData.gender;
+
             console.log({ gender, age, height, weight, lifestyle });
-            const nutrition = await fetchNutritionData({ sex: gender, age, height, weight, activity: lifestyle });
-            console.log('Nutrition data:', nutrition);
 
 
             const data = await fetchNutritionData({
