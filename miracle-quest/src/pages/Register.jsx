@@ -68,9 +68,6 @@ const Register = () => {
                 ...prev,
                 [name]: value,
             }));
-            if (value == 'male') {
-                console.log(value);
-            };
         }
     };
 
