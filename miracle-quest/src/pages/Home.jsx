@@ -20,6 +20,57 @@ const Home = () => {
         protein: { consumed: 0, target: 50 },
         fats: { consumed: 0, target: 70 }
     });
+
+    const [formData, setFormData] = useState({
+        username: '',
+        sex: '',
+        birthdate: '',
+        height: '',
+        weight: '',
+        lifestyle: '',
+        goals: '',
+        mealTimes: {
+            breakfast: '',
+            lunch: '',
+            dinner: ''
+        }
+    });
+
+    // Fetch user data on component mount
+    useEffect(() => {
+        const loadUserData = async () => {
+            try {
+                if (user) {
+                    const userData = await getUserData(user.uid);
+                    if (userData) {
+                        setFormData({
+                            username: userData.username || '',
+                            sex: userData.sex || '',
+                            birthdate: userData.birthdate || '',
+                            height: userData.height || '',
+                            weight: userData.weight || '',
+                            lifestyle: userData.lifestyle || '',
+                            goals: userData.goals || '',
+                            mealTimes: {
+                                breakfast: userData.mealTimes?.breakfast || '',
+                                lunch: userData.mealTimes?.lunch || '',
+                                dinner: userData.mealTimes?.dinner || ''
+                            }
+                        });
+                        setOriginalUsername(userData.username || '');
+                    }
+                }
+            } catch (err) {
+                setError('Failed to load user data');
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadUserData();
+    }, [user]);
+
     const [selectedMealTime, setSelectedMealTime] = useState('');
     const [emoji, setEmoji] = useState('😊'); // Default emoji
     const [waterIntake, setWaterIntake] = useState(0); // Daily water intake
@@ -190,7 +241,7 @@ const Home = () => {
         <>
             <Navigation />
             <Container fluid className="py-4">
-                <h2 className="text-center mb-4">Current Progress {userData?.username} {emoji}</h2>
+                <h2 className="text-center mb-4">Current Progress {formData.username} {emoji}</h2>
                 <p className="text-center">Stay hydrated! Your recommended daily water intake is {waterIntake} ml.</p>
                 <Row className="mb-4">
                     <NutritionCard
