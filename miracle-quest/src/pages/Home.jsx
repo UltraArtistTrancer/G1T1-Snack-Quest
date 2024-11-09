@@ -59,7 +59,8 @@ const Home = () => {
                             goals: userData.goals
                         });
                         console.log(nutritionResponse.data);
-                        await updateDoc(doc(db, "users", user.uid), ...nutritionResponse.data);
+                        await updateDoc(doc(db, "users", user.uid), {...nutritionResponse.data});
+                        console.error('Update error:', err);
                     }
                 }
             } catch (err) {
