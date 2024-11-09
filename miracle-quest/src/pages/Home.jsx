@@ -34,7 +34,7 @@ const Home = () => {
             const userData = await getUserData(user.uid);
             if (!userData) return;
 
-            const today = new Date().toISOString().split('T')[0]; 
+            const today = new Date().toISOString().split('T')[0];
             const dailyTotals = await getDailyNutrition(user.uid, today);
 
             const processedTargets = {
@@ -115,7 +115,7 @@ const Home = () => {
         <>
             <Navigation />
             <Container fluid className="py-4">
-                <h2 className="text-center mb-4">BPAS Progress {emoji}</h2>
+                <h2 className="text-center mb-4">Current Progress {emoji}</h2>
                 <p className="text-center">Stay hydrated! Your recommended daily water intake is {waterIntake} ml.</p>
                 <Row className="mb-4">
                     <NutritionCard
