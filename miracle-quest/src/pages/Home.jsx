@@ -6,6 +6,7 @@ import Navigation from '../components/common/Navigation';
 import ChatInterface from '../components/dashboard/ChatInterface';
 import { NutritionCard } from "../components/dashboard/NutritionCard";
 import { setupMealNotifications } from '../utils/notificationHelper';
+import { fetchNutritionData } from '../services/geminiApi.js';
 
 const Home = () => {
     const { user } = useAuth();
@@ -27,6 +28,29 @@ const Home = () => {
         const cleanValue = value.toString().replace(/,/g, '');
         return Math.round(parseFloat(cleanValue)) || 0;
     };
+
+    const calculateAge = (birthdate) => {
+        const today = new Date();
+        const birthDate = new Date(birthdate);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        return age;
+    };
+
+    const nutritionResponse = fetchNutritionData({
+        sex: formData.sex,
+        age: calculateAge(formData.birthdate),
+        height: formData.height,
+        weight: formData.weight,
+        activity: formData.lifestyle,
+        goals: formData.goals
+    });
+    
 
     const calculateDailyNutrition = useCallback(async () => {
         try {
