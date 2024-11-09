@@ -66,8 +66,11 @@ const Register = () => {
         } else {
             setFormData(prev => ({
                 ...prev,
-                [name]: value
+                [name]: value,
             }));
+            if (value == 'male') {
+                console.log(value);
+            };
         }
     };
 
@@ -139,14 +142,14 @@ const Register = () => {
             //         calorieNeeds: nutritionData.calorieNeeds
             //     }
             // });
-            const nutritionResponse = await fetchNutritionData({
-                sex: formData.gender,
-                age: calculateAge(formData.birthdate),
-                height: formData.height,
-                weight: formData.weight,
-                activity: formData.lifestyle,
-                goals: formData.goals
-            });
+            // const nutritionResponse = await fetchNutritionData({
+            //     sex: formData.gender,
+            //     age: calculateAge(formData.birthdate),
+            //     height: formData.height,
+            //     weight: formData.weight,
+            //     activity: formData.lifestyle,
+            //     goals: formData.goals
+            // });
 
             await setDoc(doc(db, "users", userCredential.user.uid), {
                 username: formData.username,
