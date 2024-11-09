@@ -68,7 +68,7 @@ const Register = () => {
                 ...prev,
                 [name]: value
             }));
-            console.log(value);
+            console.log(name(value));
         }
     };
 
@@ -94,18 +94,18 @@ const Register = () => {
                 formData.password
             );
 
-            const gender = formData.gender;
+            // const gender = formData.gender;
 
-            console.log({ gender, age, height, weight, lifestyle });
+            // console.log({ gender, age, height, weight, lifestyle });
 
 
-            const data = await fetchNutritionData({
-                sex: formData.gender,
-                age: age,
-                height: formData.height,
-                weight: formData.weight,
-                activity: formData.lifestyle,
-            });
+            // const data = await fetchNutritionData({
+            //     sex: formData.gender,
+            //     age: age,
+            //     height: formData.height,
+            //     weight: formData.weight,
+            //     activity: formData.lifestyle,
+            // });
 
             await setDoc(doc(db, "users", userCredential.user.uid), {
                 username: formData.username,
@@ -117,12 +117,12 @@ const Register = () => {
                 goals: formData.goals,
                 mealTimes: formData.mealTimes,
                 createdAt: new Date().toISOString(),
-                carbohydrates: data.carbohydrates,
-                protein: data.protein,
-                fat: data.fat,
-                fiber: data.fiber,
-                bmi: data.bmi,
-                calorieNeeds: data.calorieNeeds,
+                // carbohydrates: data.carbohydrates,
+                // protein: data.protein,
+                // fat: data.fat,
+                // fiber: data.fiber,
+                // bmi: data.bmi,
+                // calorieNeeds: data.calorieNeeds,
             });
 
             navigate('/home');
