@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../services/firebase';
+import { fetchNutritionData } from '../services/NutritionAPI';
 import AuthLayout from '../components/common/AuthLayout';
 import FormField from '../components/common/FormField';
 
@@ -92,6 +93,14 @@ const Register = () => {
                 formData.password
             );
 
+            const data = await fetchNutritionData({
+                sex: formData.gender,
+                age: age,
+                height: formData.height,
+                weight: formData.weight,
+                activity: formData.lifestyle,
+            });
+
             await setDoc(doc(db, "users", userCredential.user.uid), {
                 username: formData.username,
                 gender: formData.gender,
@@ -101,7 +110,13 @@ const Register = () => {
                 lifestyle: formData.lifestyle,
                 goals: formData.goals,
                 mealTimes: formData.mealTimes,
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                carbohydrates: data.carbohydrates,
+                protein: data.protein,
+                fat: data.fat,
+                fiber: data.fiber,
+                bmi: data.bmi,
+                calorieNeeds: data.calorieNeeds,
             });
 
             navigate('/home');
@@ -159,6 +174,7 @@ const Register = () => {
                         <Form.Group className="mb-3">
                             <Form.Label>Gender</Form.Label>
                             <Form.Select
+                                id="sex"
                                 name="gender"
                                 value={formData.gender}
                                 onChange={handleChange}
@@ -182,12 +198,13 @@ const Register = () => {
                         {age && (
                                 <Form.Group className="mb-3">
                                 <Form.Label>Age</Form.Label>
-                                <Form.Control type="text" value={age} readOnly />
+                                <Form.Control id="currentAge" type="text" value={age} readOnly />
                                 </Form.Group>
                             )}
 
                         {/* Physical Information */}
                         <FormField
+                            id="height"
                             label="Height (cm)"
                             type="number"
                             value={formData.height}
@@ -197,6 +214,7 @@ const Register = () => {
                         />
 
                         <FormField
+                            id="weight"
                             label="Weight (kg)"
                             type="number"
                             value={formData.weight}
@@ -209,6 +227,7 @@ const Register = () => {
                         <Form.Group className="mb-3">
                             <Form.Label>Lifestyle</Form.Label>
                             <Form.Select
+                                id="lifestyle"
                                 name="lifestyle"
                                 value={formData.lifestyle}
                                 onChange={handleChange}
