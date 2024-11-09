@@ -190,7 +190,7 @@ const Home = () => {
         <>
             <Navigation />
             <Container fluid className="py-4">
-                <h2 className="text-center mb-4">Current Progress {emoji}</h2>
+                <h2 className="text-center mb-4">Current Progress {userData.username} {emoji}</h2>
                 <p className="text-center">Stay hydrated! Your recommended daily water intake is {waterIntake} ml.</p>
                 <Row className="mb-4">
                     <NutritionCard
