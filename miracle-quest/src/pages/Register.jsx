@@ -105,19 +105,19 @@ const Register = () => {
             //     weight: formData.weight,
             //     activity: formData.lifestyle,
             // });
-            const nutritionData = await fetchNutritionData({
-                sex: gender,
-                age,
-                height,
-                weight,
-                activity: lifestyle
-            });
+            // const nutritionData = await fetchNutritionData({
+            //     sex: gender,
+            //     age,
+            //     height,
+            //     weight,
+            //     activity: lifestyle
+            // });
             
             console.log(formData.gender);
-            console.log(formData.age);
-            console.log(formData.height);
-            console.log(formData.weight);
-            console.log(formData.lifestyle);
+            // console.log(formData.age);
+            // console.log(formData.height);
+            // console.log(formData.weight);
+            // console.log(formData.lifestyle);
             
 
             // await setDoc(doc(db, "users", userId), {
