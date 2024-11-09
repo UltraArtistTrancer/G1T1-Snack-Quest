@@ -37,7 +37,7 @@ const AboutYou = () => {
 
                 // Generate dates array
                 for (let date = new Date(startDate); date <= today; date.setDate(date.getDate() + 1)) {
-                    dates.push(date.toISOString().split('T')[0]);
+                    dates.push(date.toLocaleDateString('en-CA'));
                 }
 
                 // Fetch nutrition data for each date
