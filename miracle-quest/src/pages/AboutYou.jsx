@@ -72,7 +72,7 @@ const AboutYou = () => {
         const options = {
             month: 'short',
             day: 'numeric',
-            timeZone: 'America/Halifax', // Use Halifax timezone
+            timeZone: 'America/Rio_Branco', // Use Rio Branco timezone
         };
     
         switch (timeRange) {
@@ -81,7 +81,7 @@ const AboutYou = () => {
             case 'month':
                 return date.toLocaleDateString('en-US', options);
             case 'year':
-                return date.toLocaleDateString('en-US', { month: 'short', year: '2-digit', timeZone: 'America/Halifax' });
+                return date.toLocaleDateString('en-US', { month: 'short', year: '2-digit', timeZone: 'America/Rio_Branco' });
             default:
                 return date.toLocaleDateString('en-US', options);
         }
