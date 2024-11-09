@@ -113,44 +113,45 @@ const Register = () => {
                 weight,
                 activity: lifestyle
             });
+            console.log(nutritionData);
 
-            await setDoc(doc(db, "users", userId), {
-                username,
-                gender,
-                birthdate: formData.birthdate,
-                height,
-                weight,
-                lifestyle,
-                goals: formData.goals,
-                mealTimes: formData.mealTimes,
-                createdAt: new Date().toISOString(),
-                nutrition: {
-                    carbohydrates: nutritionData.carbohydrates,
-                    protein: nutritionData.protein,
-                    fat: nutritionData.fat,
-                    fiber: nutritionData.fiber,
-                    bmi: nutritionData.bmi,
-                    calorieNeeds: nutritionData.calorieNeeds
-                }
-            });
-
-            // await setDoc(doc(db, "users", userCredential.user.uid), {
-            //     username: formData.username,
-            //     gender: formData.gender,
+            // await setDoc(doc(db, "users", userId), {
+            //     username,
+            //     gender,
             //     birthdate: formData.birthdate,
-            //     height: formData.height,
-            //     weight: formData.weight,
-            //     lifestyle: formData.lifestyle,
+            //     height,
+            //     weight,
+            //     lifestyle,
             //     goals: formData.goals,
             //     mealTimes: formData.mealTimes,
             //     createdAt: new Date().toISOString(),
-            //     // carbohydrates: data.carbohydrates,
-            //     // protein: data.protein,
-            //     // fat: data.fat,
-            //     // fiber: data.fiber,
-            //     // bmi: data.bmi,
-            //     // calorieNeeds: data.calorieNeeds,
+            //     nutrition: {
+            //         carbohydrates: nutritionData.carbohydrates,
+            //         protein: nutritionData.protein,
+            //         fat: nutritionData.fat,
+            //         fiber: nutritionData.fiber,
+            //         bmi: nutritionData.bmi,
+            //         calorieNeeds: nutritionData.calorieNeeds
+            //     }
             // });
+
+            await setDoc(doc(db, "users", userCredential.user.uid), {
+                username: formData.username,
+                gender: formData.gender,
+                birthdate: formData.birthdate,
+                height: formData.height,
+                weight: formData.weight,
+                lifestyle: formData.lifestyle,
+                goals: formData.goals,
+                mealTimes: formData.mealTimes,
+                createdAt: new Date().toISOString(),
+                // carbohydrates: data.carbohydrates,
+                // protein: data.protein,
+                // fat: data.fat,
+                // fiber: data.fiber,
+                // bmi: data.bmi,
+                // calorieNeeds: data.calorieNeeds,
+            });
 
             navigate('/home');
         } catch (err) {
