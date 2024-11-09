@@ -273,11 +273,10 @@ const History = () => {
     };
 
     const formatDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
+        return new Date(dateString).toLocaleDateString(undefined, {
             year: 'numeric',
             month: 'long',
-            day: 'numeric',
-            timeZone: 'America/Chicago' // Set to Arkansas time (Central Time Zone)
+            day: 'numeric'
         });
     };
 
