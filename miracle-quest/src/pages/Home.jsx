@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Container, Row, Col, Card, Form } from 'react-bootstrap';
 import { useAuth } from '../hooks/useAuth';
-import { getDailyNutrition, getUserData } from '../services/firebaseHelpers';
+import { getDailyNutrition, getUserData, updateUserData } from '../services/firebaseHelpers';
 import Navigation from '../components/common/Navigation';
 import ChatInterface from '../components/dashboard/ChatInterface';
 import { NutritionCard } from "../components/dashboard/NutritionCard";
@@ -61,8 +61,9 @@ const Home = () => {
                             goals: userData.goals
                         });
                         console.log(nutritionResponse.data);
-                        await updateDoc(doc(db, "users", user.uid), {...nutritionResponse.data});
-                        console.error('Update error:', err);
+                        await updateUserData(user.uid, {
+                            ...nutritionResponse.data
+                        });
                     }
                 }
             } catch (err) {
