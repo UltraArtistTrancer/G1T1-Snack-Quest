@@ -37,12 +37,20 @@ const Home = () => {
             const today = new Date().toISOString().split('T')[0];
             console.log(today);
             const formatDateInArkansas = (dateString) => {
-                return new Date(dateString).toLocaleDateString('en-US', {
+                const date = new Date(dateString);
+                const options = {
                     year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    timeZone: 'America/Chicago'  // Arkansas Time Zone
-                });
+                    month: '2-digit',  // Ensures two-digit month (e.g., '11')
+                    day: '2-digit',    // Ensures two-digit day (e.g., '09')
+                    timeZone: 'America/Chicago',  // Arkansas timezone
+                };
+                
+                // Get the date in the required format: YYYY-MM-DD
+                const formattedDate = date.toLocaleDateString('en-US', options);
+                
+                // Convert the formatted date to 'YYYY-MM-DD' format
+                const [month, day, year] = formattedDate.split('/');
+                return `${year}-${month}-${day}`;
             };
             const thisToday=formatDateInArkansas(today)
             console.log(thisToday)
