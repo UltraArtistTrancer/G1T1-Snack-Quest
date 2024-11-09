@@ -36,13 +36,13 @@ const Home = () => {
 
             const today = new Date().toISOString().split('T')[0];
             console.log(today);
-            const formatDateInArkansas = (dateString) => {
+            const formatDateInSingapore = (dateString) => {
                 const date = new Date(dateString);
                 const options = {
                     year: 'numeric',
                     month: '2-digit',  // Ensures two-digit month (e.g., '11')
                     day: '2-digit',    // Ensures two-digit day (e.g., '09')
-                    timeZone: 'America/Chicago',  // Arkansas timezone
+                    timeZone: 'Asia/Singapore',  // Singapore timezone
                 };
                 
                 // Get the date in the required format: YYYY-MM-DD
@@ -52,7 +52,7 @@ const Home = () => {
                 const [month, day, year] = formattedDate.split('/');
                 return `${year}-${month}-${day}`;
             };
-            const thisToday=formatDateInArkansas(today)
+            const thisToday=formatDateInSingapore(today)
             console.log(thisToday)
             const dailyTotals = await getDailyNutrition(user.uid, thisToday);
 
