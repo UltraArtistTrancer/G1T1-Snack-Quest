@@ -72,7 +72,7 @@ const AboutYou = () => {
         const options = {
             month: 'short',
             day: 'numeric',
-            timeZone: 'Asia/Singapore', // Use Singapore's timezone
+            timeZone: 'America/Halifax', // Use Halifax timezone
         };
     
         switch (timeRange) {
@@ -81,7 +81,7 @@ const AboutYou = () => {
             case 'month':
                 return date.toLocaleDateString('en-US', options);
             case 'year':
-                return date.toLocaleDateString('en-US', { month: 'short', year: '2-digit', timeZone: 'Asia/Singapore' });
+                return date.toLocaleDateString('en-US', { month: 'short', year: '2-digit', timeZone: 'America/Halifax' });
             default:
                 return date.toLocaleDateString('en-US', options);
         }
