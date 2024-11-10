@@ -35,6 +35,13 @@ const CUISINE_TYPES = [
     'western'
 ];
 
+const PRICE_RANGES = [
+    { value: 'all', label: 'All Prices' },
+    { value: '0,1', label: '$ (Inexpensive)' },
+    { value: '2', label: '$$ (Moderate)' },
+    { value: '3,4', label: '$$$ (Expensive)' }
+];
+
 const FoodNearby = () => {
     const [map, setMap] = useState(null);
     const [center, setCenter] = useState(null);
@@ -50,6 +57,7 @@ const FoodNearby = () => {
     const [lastSearchRadius, setLastSearchRadius] = useState(null);
     const [selectedCuisine, setSelectedCuisine] = useState('all');
     const [nutritionData, setNutritionData] = useState(null);
+    const [selectedPriceRange, setSelectedPriceRange] = useState('all');
 
     const infoWindowRef = useRef(null);
     const directionsRendererRef = useRef(null);
@@ -231,18 +239,27 @@ const FoodNearby = () => {
 
         service.nearbySearch(request, (results, status) => {
             if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-                const foodPlaces = results.filter(place =>
+                let foodPlaces = results.filter(place =>
                     place.types.some(type => FOOD_TYPES.includes(type)) &&
                     !place.types.includes('lodging') &&
                     !place.types.includes('park') &&
                     !place.types.includes('shopping_mall')
                 );
 
+                // Filter by price range if not 'all'
+                if (selectedPriceRange !== 'all') {
+                    const priceRanges = selectedPriceRange.split(',').map(Number);
+                    foodPlaces = foodPlaces.filter(place => 
+                        place.price_level !== undefined && 
+                        priceRanges.includes(place.price_level)
+                    );
+                }
+
                 setPlaces(foodPlaces);
 
                 // Show message if no results found
                 if (foodPlaces.length === 0) {
-                    setError(`No ${selectedCuisine} ${selectedFoodType}s found within ${searchRadius/1000}km. Try changing your filters or increasing the search radius.`);
+                    setError(`No ${selectedCuisine} ${selectedFoodType}s found within ${searchRadius/1000}km matching your filters. Try changing your filters or increasing the search radius.`);
                 }
             } else {
                 setError('Error finding nearby places');
@@ -250,7 +267,7 @@ const FoodNearby = () => {
             }
             setLoading(false);
         });
-    }, [map, center, searchRadius, selectedFoodType, selectedCuisine]);
+    }, [map, center, searchRadius, selectedFoodType, selectedCuisine, selectedPriceRange]);
 
     const onMapLoad = useCallback((map) => {
         setMap(map);
@@ -381,6 +398,21 @@ const FoodNearby = () => {
                                             <option value={1500}>1.5km</option>
                                             <option value={2000}>2km</option>
                                             <option value={3000}>3km</option>
+                                        </Form.Select>
+                                    </Form.Group>
+                                </div>
+                                <div className="col-md-3">
+                                    <Form.Group>
+                                        <Form.Select
+                                            value={selectedPriceRange}
+                                            onChange={(e) => setSelectedPriceRange(e.target.value)}
+                                            className="mb-2"
+                                        >
+                                            {PRICE_RANGES.map(range => (
+                                                <option key={range.value} value={range.value}>
+                                                    {range.label}
+                                                </option>
+                                            ))}
                                         </Form.Select>
                                     </Form.Group>
                                 </div>
