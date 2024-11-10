@@ -42,11 +42,11 @@ const History = () => {
     fats: 0,
   });
   const [selectedDate, setSelectedDate] = useState(
-    new Date().toLocaleDateString("en-CA")
+    new Date().toISOString().split("T")[0]
   );
   const [dateRange, setDateRange] = useState("single"); // 'single' or 'range'
   const [endDate, setEndDate] = useState(
-    new Date().toLocaleDateString("en-CA")
+    new Date().toISOString().split("T")[0]
   );
   const [map, setMap] = useState(null);
   const [center, setCenter] = useState(null);
@@ -374,7 +374,7 @@ const History = () => {
                   type="date"
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
-                  max={new Date().toLocaleDateString("en-CA")}
+                  max={new Date().toISOString().split("T")[0]}
                 />
               </div>
               {dateRange === "range" && (
@@ -384,7 +384,7 @@ const History = () => {
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
                     min={selectedDate}
-                    max={new Date().toLocaleDateString("en-CA")}
+                    max={new Date().toISOString().split("T")[0]}
                   />
                 </div>
               )}
