@@ -117,6 +117,7 @@ const Home = () => {
                         await updateUserData(user.uid, {
                             ...nutritionResponse.data
                         });
+                        window.location.reload();
                     }
                 }
             } catch (err) {
