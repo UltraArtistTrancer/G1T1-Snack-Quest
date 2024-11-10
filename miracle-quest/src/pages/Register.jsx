@@ -6,7 +6,6 @@ import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../services/firebase';
 import AuthLayout from '../components/common/AuthLayout';
 import FormField from '../components/common/FormField';
-import { validatePassword, sanitizeInput } from '../utils/securityUtils';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -60,13 +59,9 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
+        if (!validateForm()) return;
 
-        // Validate password
-        if (!validatePassword(formData.password)) {
-            setError('Password must be at least 8 characters and contain uppercase, lowercase, numbers, and special characters');
-            return;
-        }
+        setError('');
 
         // Sanitize inputs
         const sanitizedData = {
@@ -85,14 +80,14 @@ const Register = () => {
             );
 
             await setDoc(doc(db, "users", userCredential.user.uid), {
-                username: sanitizedData.username,
-                gender: sanitizedData.gender,
-                birthdate: sanitizedData.birthdate,
-                height: sanitizedData.height,
-                weight: sanitizedData.weight,
-                lifestyle: sanitizedData.lifestyle,
-                goals: sanitizedData.goals,
-                mealTimes: sanitizedData.mealTimes,
+                username: formData.username,
+                gender: formData.gender,
+                birthdate: formData.birthdate,
+                height: formData.height,
+                weight: formData.weight,
+                lifestyle: formData.lifestyle,
+                goals: formData.goals,
+                mealTimes: formData.mealTimes,
                 createdAt: new Date().toISOString(),
                 calorieNeeds: 0,
                 carbohydrates: 0,
