@@ -106,7 +106,7 @@ const Register = () => {
 
             <Form onSubmit={handleSubmit}>
                 <FormField
-                    label="Username"
+                    label="Name"
                     value={formData.username}
                     onChange={handleChange}
                     name="username"
