@@ -362,7 +362,7 @@ const History = () => {
                 />
                 <Form.Check
                   type="radio"
-                  label="Date Range"
+                  label="Average Between 2 Dates"
                   name="dateRange"
                   checked={dateRange === "range"}
                   onChange={() => setDateRange("range")}
