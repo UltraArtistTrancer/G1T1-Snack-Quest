@@ -1,17 +1,13 @@
 // NutritionAPI.js
 import axios from 'axios';
 
-// Replace hardcoded API key with environment variable
-const API_KEY = import.meta.env.VITE_RAPID_API_KEY;
-
 async function fetchNutritionData({ sex, age, height, weight, activity }) {
     return new Promise((resolve, reject) => {
         const apiUrl = 'https://nutrition-calculator.p.rapidapi.com/api/nutrition-info';
 
         axios.get(apiUrl, { 
             headers: {
-                'x-rapidapi-key': API_KEY,
-                'x-rapidapi-host': 'nutrition-calculator.p.rapidapi.com'
+                'x-rapidapi-key': '4b229f2d4bmshf0f87c82f3c0affp14a380jsn22f455c302c3',
             },
             params: {
                 measurement_units: 'met',

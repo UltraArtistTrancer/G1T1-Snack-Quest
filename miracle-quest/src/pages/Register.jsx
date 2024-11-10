@@ -63,20 +63,13 @@ const Register = () => {
 
         setError('');
 
-        // Sanitize inputs
-        const sanitizedData = {
-            email: sanitizeInput(formData.email),
-            username: sanitizeInput(formData.username),
-            // ... sanitize other fields
-        };
-
         setLoading(true);
 
         try {
             const userCredential = await createUserWithEmailAndPassword(
                 auth,
-                sanitizedData.email,
-                sanitizedData.password
+                formData.email,
+                formData.password
             );
 
             await setDoc(doc(db, "users", userCredential.user.uid), {
